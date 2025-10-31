@@ -2,9 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sqlite3
 import os
+from api import app
 
-app = Flask(__name__)
-CORS(app, origins="http://localhost:5173") 
+CORS(app, origins="https://barbalao.vercel.app/") 
 
 def get_conn():
     caminhoBanco = os.path.join(os.path.dirname(__file__), '..', 'db', 'barbalao.db')
@@ -112,6 +112,4 @@ def remove_product(product_id):
         print(f"Erro ao remover produto: {e}")
         return jsonify({"message": "Erro interno"}), 500
 
-if __name__ == '__main__':
-    app.run(port=3001)
     

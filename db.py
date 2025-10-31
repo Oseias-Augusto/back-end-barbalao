@@ -8,15 +8,26 @@ try:
                         CREATE TABLE IF NOT EXISTS users(
                         iduser INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                         nome TEXT NOT NULL UNIQUE,
-                        senha TEXT NOT NULL
-                   );
+                        hash TEXT NOT NULL,
+                        salt TEXT NOT NULL
+                );
                     ''')
     
     cursor.execute('''
-                        INSERT INTO users(nome, senha)
-                        VALUES(?, ?);
-                  ''', ('Eduardo', 'Sete45082526'))
+                        INSERT INTO users(nome, hash, salt)
+                        VALUES(?, ?, ?);
+                ''', ('Eduardo', 'barbalao123'))
 
+
+    cursor.execute(
+        '''
+            CREATE TABLE IF NOT EXISTS categoria(
+                id_categ        INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                name_categ      TEXT NOT NULL,
+                image_categ     TEXT
+            )
+        '''
+    )
     cursor.execute(
         '''
             CREATE TABLE IF NOT EXISTS products(
@@ -27,6 +38,8 @@ try:
             );
         '''
     )
+
+    
     
     conn.commit()
     conn.close()
