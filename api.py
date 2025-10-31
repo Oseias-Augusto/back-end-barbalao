@@ -35,9 +35,8 @@ def api_server():
 
             cursor.execute('SELECT * FROM users WHERE nome = ?', (nome,))
             usuario = cursor.fetchone()
-
-            conn.close()
-        
+            
+            
             if usuario != None:
                 if usuario[2] == senha:
                         result = {
@@ -52,9 +51,11 @@ def api_server():
                 "message": "Usuário ou senha incorretos"
             }), 400
 
+            conn.close()
         except TypeError as e:
              print(f"Erro usuário não encontrado: {e}")        
         return jsonify({"route": "/login", "status": 500})
 
 if __name__ == '__main__':
-    app.run(port=3001)
+    port = int(os.environ.get("PORT", 5000))  # Render define PORT
+    app.run(host="0.0.0.0", port=port)
