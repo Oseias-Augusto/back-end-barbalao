@@ -16,7 +16,7 @@ try:
     cursor.execute('''
                         INSERT INTO users(nome, hash, salt)
                         VALUES(?, ?, ?);
-                ''', ('Eduardo', 'barbalao123'))
+                ''', ('Eduardo', 'barbalao123', '123'))
 
 
     cursor.execute(
