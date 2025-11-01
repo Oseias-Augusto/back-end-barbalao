@@ -1,6 +1,6 @@
 import sqlite3
 from encrypt import hash_password
-hashC = hash_password('Bar')
+hashC = hash_password('Barbalao123')
 try:
     conn = sqlite3.connect('barbalao.db')
 
@@ -16,7 +16,7 @@ try:
     cursor.execute('''
                         INSERT INTO users(nome, hash)
                         VALUES(?, ?);
-                ''', ('Eduardo', 'barbalao123'))
+                ''', ('Eduardo', hashC))
 
 
     cursor.execute(
