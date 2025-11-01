@@ -18,13 +18,16 @@ def get_conn():
 def create_product():
     try:
         data = request.get_json()
+        print("1")
 
         if data is None:
             return jsonify({"message": "JSON inválido ou ausente"}), 400
+        
     
         name = data.get('nome')
         image = data.get('imagem')
         price = data.get('preco')
+        print("2")
 
         if not name or price is None:
             return jsonify({"message": "Campos obrigatórios: name e price"}), 400
@@ -39,6 +42,7 @@ def create_product():
             ''', (name, price, image))
         
         conn.commit()
+        print(cursor.lastrowid)
         new_id = cursor.lastrowid
 
         conn.close()
