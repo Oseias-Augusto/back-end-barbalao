@@ -1,9 +1,7 @@
 import sqlite3
 from encrypt import hash_password
-hashC = hash_password('Barbalao123')
 try:
     conn = sqlite3.connect('barbalao.db')
-
     cursor = conn.cursor()
     cursor.execute('''
                         CREATE TABLE IF NOT EXISTS users(
@@ -16,7 +14,7 @@ try:
     cursor.execute('''
                         INSERT INTO users(nome, hash)
                         VALUES(?, ?);
-                ''', ('Eduardo', hashC))
+                ''', ('Eduardo', hash_password('Barbalao123')))
 
 
     cursor.execute(

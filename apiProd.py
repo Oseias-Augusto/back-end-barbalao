@@ -4,7 +4,7 @@ import sqlite3
 import os
 from api import app
 
-CORS(app, origins="https://barbalao.vercel.app/") 
+CORS(app, origins="http://localhost:5174/") 
 
 def get_conn():
     caminhoBanco = os.path.join(os.path.dirname(__file__), '..', 'db', 'barbalao.db')
