@@ -4,7 +4,7 @@ import sqlite3
 import os
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:5174",
+CORS(app, origins=["http://localhost:5174/",
         "https://barbalao.vercel.app"]) 
 
 def get_conn():
@@ -74,7 +74,7 @@ def list_products():
     return jsonify({"message": "Erro Interno"}), 500
 
 # Atualizar Prod.
-@app.route('/api/produtcs/atualizar/<int:product_id>/', methods=['POST'])
+@app.route('/api/products/atualizar/<int:product_id>/', methods=['POST'])
 def update_products(product_id, product_name = None, product_image = None, product_price = None):
     try:
         conn = get_conn()
