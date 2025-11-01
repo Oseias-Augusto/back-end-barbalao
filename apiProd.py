@@ -82,7 +82,7 @@ def update_products(product_id, product_name = None, product_image = None, produ
         if product_price:
             cursor.execute('UPDATE products SET price = ? WHERE idprod = ?;', (product_image, product_id))
 
-        cursor.commit()
+        conn.commit()
         cursor.close()
 
         if cursor.rowcount == 0:
