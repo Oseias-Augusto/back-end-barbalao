@@ -1,5 +1,6 @@
 import sqlite3
-
+from encrypt import hash_password
+hashC = hash_password('Bar')
 try:
     conn = sqlite3.connect('barbalao.db')
 
@@ -8,15 +9,14 @@ try:
                         CREATE TABLE IF NOT EXISTS users(
                         iduser INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                         nome TEXT NOT NULL UNIQUE,
-                        hash TEXT NOT NULL,
-                        salt TEXT NOT NULL
+                        hash TEXT NOT NULL
                 );
                     ''')
     
     cursor.execute('''
-                        INSERT INTO users(nome, hash, salt)
-                        VALUES(?, ?, ?);
-                ''', ('Eduardo', 'barbalao123', '123'))
+                        INSERT INTO users(nome, hash)
+                        VALUES(?, ?);
+                ''', ('Eduardo', 'barbalao123'))
 
 
     cursor.execute(
