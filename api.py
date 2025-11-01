@@ -36,9 +36,8 @@ def api_server():
             cursor.execute('SELECT * FROM users WHERE nome = ?', (nome,))
             usuario = cursor.fetchone()
             
-            
             if usuario != None:
-                if usuario[2] == senha:
+                if verify_password(usuario[2], senha):
                         result = {
                             "route": "/form", 
                             "message": "OK"

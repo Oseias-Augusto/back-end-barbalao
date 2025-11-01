@@ -110,6 +110,8 @@ def remove_product(product_id):
 
     except Exception as e:
         print(f"Erro ao remover produto: {e}")
-        return jsonify({"message": "Erro interno"}), 500
+        return jsonify({"message": "Erro interno"}), 500       
 
-    
+
+
+
