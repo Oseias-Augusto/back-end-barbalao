@@ -8,8 +8,7 @@ CORS(app, origins=["http://localhost:5174/",
         "https://barbalao.vercel.app"]) 
 
 def get_conn():
-    caminhoBanco = os.path.join(os.path.dirname(__file__), '..', 'db', 'barbalao.db')
-    conn = sqlite3.connect(caminhoBanco)
+    conn = sqlite3.connect('barbalao.db')
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -52,7 +51,7 @@ def create_product():
 
     except Exception as e:
         print(f"Erro ao criar produto: {e}")
-    return jsonify({"message": "Erro interno"}), 500
+        return jsonify({"message": "Erro interno"}), 500
 
 # Pega Prod.
 @app.route('/api/products/', methods=['GET'])
@@ -71,7 +70,7 @@ def list_products():
     
     except Exception as e:
         print(f"Erro ao criar produto: {e}")
-    return jsonify({"message": "Erro Interno"}), 500
+        return jsonify({"message": "Erro Interno"}), 500
 
 # Atualizar Prod.
 @app.route('/api/products/atualizar/<int:product_id>/', methods=['POST'])
