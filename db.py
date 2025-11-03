@@ -1,8 +1,16 @@
-import sqlite3
+import psycopg2
 from encrypt import hash_password
+
 try:
-    conn = sqlite3.connect('barbalao.db')
+    conn = psycopg2.connect(
+    host="dpg-d42kp3i4d50c739qr750-a.render.com",
+    port="5432",
+    database="banco_barbalao",
+    user="root",
+    password="DdDLJr8BYykOf9hJL9TWXP2eDsF2A8S6"
+)
     cursor = conn.cursor()
+
     cursor.execute('''
                         CREATE TABLE IF NOT EXISTS users(
                         iduser INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -29,10 +37,13 @@ try:
     cursor.execute(
         '''
             CREATE TABLE IF NOT EXISTS products(
-                idprod  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                id_prod  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 image   TEXT,
                 name    TEXT NOT NULL,
-                price   REAL NOT NULL
+                price   REAL NOT NULL,
+                categ_id    INTEGER NOT NULL,
+
+                FOREIGN KEY(categ_id) REFERECES categoria(id_categ)
             );
         '''
     )
@@ -42,5 +53,5 @@ try:
     conn.commit()
     conn.close()
 
-except sqlite3.Error as e: 
+except psycopg2.Error as e: 
     print(f"Erro não legal: {e}")
