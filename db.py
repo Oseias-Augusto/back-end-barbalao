@@ -44,7 +44,7 @@ while True:
                     price   REAL NOT NULL,
                     categ_id    INTEGER NOT NULL,
 
-                    FOREIGN KEY(categ_id) REFERECES categoria(id_categ)
+                    FOREIGN KEY(categ_id) REFERENCES  categoria(id_categ)
                 );
             '''
         )
