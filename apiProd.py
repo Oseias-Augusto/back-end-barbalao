@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import sqlite3
+import psycopg2
 import os
 
 app = Flask(__name__)
@@ -12,8 +12,8 @@ CORS(app, origins=[
 
 
 def get_conn():
-    conn = sqlite3.connect('barbalao.db')
-    conn.row_factory = sqlite3.Row
+    conn = psycopg2.connect('barbalao.db')
+    conn.row_factory = psycopg2.Row
     return conn
 
 @app.after_request
