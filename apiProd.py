@@ -7,6 +7,8 @@ app = Flask(__name__)
 CORS(app, origins=["http://localhost:5174/",
         "https://barbalao.vercel.app"]) 
 
+Origin = "http://localhost:5174/"
+
 def get_conn():
     conn = sqlite3.connect('barbalao.db')
     conn.row_factory = sqlite3.Row
@@ -15,7 +17,7 @@ def get_conn():
 @app.after_request
 def add_header(response):
     response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["Access-Control-Allow-Headers"] = "Origin, X-Requested-With, Content-Type, Accept"
+    response.headers["Access-Control-Allow-Headers"] = f"{Origin}, X-Requested-With, Content-Type, Accept"
     return response
 
 # Cria Prod.
