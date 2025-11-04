@@ -12,6 +12,12 @@ def get_conn():
     conn.row_factory = sqlite3.Row
     return conn
 
+@app.after_request
+def add_header(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Access-Control-Allow-Headers"] = "Origin, X-Requested-With, Content-Type, Accept"
+    return response
+
 # Cria Prod.
 @app.route('/api/products/', methods=['POST'])
 def create_product():
@@ -46,23 +52,7 @@ def create_product():
 
         conn.close()
         
-        return jsonify({
-                    "header": {
-                        "Access-Control-Allow-Headers",
-                        "Origin, X-Requested-With, Content-Type, Accept"
-                    },
-                    
-                    "data": {
-                        "items": [
-                                {
-                                    "id": new_id,
-                                    "message": "Produto Criado",
-                                    "value": 201
-                                }
-                        ]
-            
-            
-            }}), 201
+        return jsonify({"message": "Produto Criado", "ID" : new_id }), 201
 
 
     except Exception as e:
