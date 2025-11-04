@@ -45,8 +45,24 @@ def create_product():
         new_id = cursor.lastrowid
 
         conn.close()
-
-        return jsonify({"message": "Produto Criado", "id": new_id}), 201
+        
+        return jsonify({
+                    "header": {
+                        "Access-Control-Allow-Headers",
+                        "Origin, X-Requested-With, Content-Type, Accept"
+                    },
+                    
+                    "data": {
+                        "items": [
+                                {
+                                    "id": new_id,
+                                    "message": "Produto Criado",
+                                    "value": 201
+                                }
+                        ]
+            
+            
+            }}), 201
 
 
     except Exception as e:

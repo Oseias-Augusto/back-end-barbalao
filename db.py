@@ -55,3 +55,4 @@ try:
 
 except psycopg2.Error as e: 
     print(f"Erro não legal: {e}")
+    continue
