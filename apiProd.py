@@ -53,8 +53,6 @@ def create_product():
 
         conn = get_conn()
         cursor = conn.cursor()
-        colnames = [desc[0] for desc in cursor.description]
-        products = [dict(zip(colnames, row)) for row in rows]
 
         cursor.execute(
             '''
@@ -64,7 +62,7 @@ def create_product():
         )
         
         conn.commit()
-        new_id = cursor.lastrowid if hasattr(cursor, 'lastrowid') else None
+        new_id = cursor.fetchone()[0]
         print("Produto criado com ID:", new_id)
 
         conn.close()
@@ -87,7 +85,8 @@ def list_products():
 
         conn.close()
 
-        products = [dict(row) for row in rows]
+        colnames = [desc[0] for desc in cursor.description]
+        products = [dict(zip(colnames, row)) for row in rows]
 
         return jsonify(products), 200
     
