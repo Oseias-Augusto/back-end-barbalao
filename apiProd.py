@@ -43,13 +43,13 @@ def create_product():
         name = data.get('nome')
         image = data.get('imagem')
         price = data.get('preco')
-        categ_id = data.get('categ_id')
+        # categ_id = data.get('categ_id')
 
-        print(f"Nome: {name}, Preço: {price}, Imagem: {type(image)}, Categoria: {categ_id}")
+        print(f"Nome: {name}, Preço: {price}, Imagem: {type(image)}")
 
-        if not name or price is None or categ_id is None:
+        if not name or price is None:
             print("Campos obrigatórios ausentes")
-            return jsonify({"message": "Campos obrigatórios: name, price e categ_id"}), 400
+            return jsonify({"message": "Campos obrigatórios: name e price"}), 400
 
         conn = get_conn()
         cursor = conn.cursor()
@@ -58,7 +58,7 @@ def create_product():
             '''
              INSERT INTO products(name, price, image)
              VALUES (%s, %s, %s)
-             RETURNING idprod
+             RETURNING id_prod
             ''', (name, float(price), image)
         )
         
