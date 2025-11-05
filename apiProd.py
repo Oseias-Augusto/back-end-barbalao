@@ -86,8 +86,7 @@ def list_products():
 
         conn.close()
 
-        colnames = [desc[0] for desc in cursor.description]
-        products = [dict(zip(colnames, row)) for row in rows]
+        products = [dict(row) for row in rows]
 
         return jsonify(products), 200
     
