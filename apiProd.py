@@ -34,20 +34,22 @@ def add_header(response):
 def create_product():
     try:
         data = request.get_json()
-        print("1")
+        print("Dados recebidos:", data)
 
         if data is None:
+            print("JSON ausente ou inválido")
             return jsonify({"message": "JSON inválido ou ausente"}), 400
         
-    
         name = data.get('nome')
         image = data.get('imagem')
         price = data.get('preco')
         categ_id = data.get('categ_id')
-        print("2")
+
+        print(f"Nome: {name}, Preço: {price}, Imagem: {type(image)}, Categoria: {categ_id}")
 
         if not name or price is None or categ_id is None:
-            return jsonify({"message": "Campos obrigatórios: name e price"}), 400
+            print("Campos obrigatórios ausentes")
+            return jsonify({"message": "Campos obrigatórios: name, price e categ_id"}), 400
 
         conn = get_conn()
         cursor = conn.cursor()
@@ -56,20 +58,21 @@ def create_product():
             '''
              INSERT INTO products(name, price, image, categ_id)
              VALUES (%s, %s, %s, %s)
-            ''', (name, price, image, categ_id))
+            ''', (name, float(price), image, int(categ_id))
+        )
         
         conn.commit()
-        print(cursor.lastrowid)
-        new_id = cursor.lastrowid
+        new_id = cursor.lastrowid if hasattr(cursor, 'lastrowid') else None
+        print("Produto criado com ID:", new_id)
 
         conn.close()
         
-        return jsonify({"message": "Produto Criado", "ID" : new_id }), 201
-
+        return jsonify({"message": "Produto Criado", "ID" : new_id}), 201
 
     except Exception as e:
         print(f"Erro ao criar produto: {e}")
-        return jsonify({"message": "Erro interno"}), 500
+        return jsonify({"message": f"Erro interno: {str(e)}"}), 500
+
 
 # Pega Prod.
 @app.route('/api/products/', methods=['GET'])
