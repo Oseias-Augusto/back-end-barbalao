@@ -58,6 +58,7 @@ def create_product():
             '''
              INSERT INTO products(name, price, image)
              VALUES (%s, %s, %s)
+             RETURNING idprod
             ''', (name, float(price), image)
         )
         
