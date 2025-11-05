@@ -19,7 +19,6 @@ def get_conn():
             user="root",
             password="DdDLJr8BYykOf9hJL9TWXP2eDsF2A8S6"        
     )
-    conn.row_factory = psycopg2.Row
     return conn
 
 @app.after_request
