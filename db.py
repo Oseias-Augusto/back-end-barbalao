@@ -27,15 +27,15 @@ while True:
         #             # hash_password('Barbalao123')
 
 
-        cursor.execute(
-            '''
-                CREATE TABLE IF NOT EXISTS categoria(
-                    id_categ        SERIAL PRIMARY KEY,
-                    name_categ      TEXT NOT NULL,
-                    image_categ     TEXT
-                )
-            '''
-        )
+        # cursor.execute(
+        #     '''
+        #         CREATE TABLE IF NOT EXISTS categoria(
+        #             id_categ        SERIAL PRIMARY KEY,
+        #             name_categ      TEXT NOT NULL,
+        #             image_categ     TEXT
+        #         )
+        #     '''
+        # )
         cursor.execute(
             '''
                 CREATE TABLE IF NOT EXISTS products(
@@ -43,11 +43,12 @@ while True:
                     image   TEXT,
                     name    TEXT NOT NULL,
                     price   REAL NOT NULL,
-                    categ_id    INTEGER NOT NULL,
-
-                    FOREIGN KEY(categ_id) REFERENCES  categoria(id_categ)
+                    
                 );
             '''
+            # categ_id    INTEGER NOT NULL,
+
+            # FOREIGN KEY(categ_id) REFERENCES  categoria(id_categ)
         )
 
         
