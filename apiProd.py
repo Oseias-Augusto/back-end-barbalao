@@ -4,11 +4,15 @@ import psycopg2
 import os
 
 app = Flask(__name__)
-CORS(app, origins=[
-        "https://localhost:5174/",
-        "https://barbalao.vercel.app",
-        "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev"
-]) 
+# CORS(app, origins=[
+#         "http://localhost:5174",
+#         "https://barbalao.vercel.app",
+#         "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev"
+# ])
+CORS(app, resources={r"/api/*": {"origins": [
+    "https://barbalao.vercel.app",
+    "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev"
+]}}, supports_credentials=True)
 
 
 def get_conn():
@@ -21,13 +25,13 @@ def get_conn():
     )
     return conn
 
-@app.after_request
-def add_header(response):
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["Access-Control-Allow-Headers"] = "Origin, X-Requested-With, Content-Type, Accept"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    return response
+# @app.after_request
+# def add_header(response):
+#     response.headers["X-Content-Type-Options"] = "nosniff"
+#     response.headers["Access-Control-Allow-Headers"] = "Origin, X-Requested-With, Content-Type, Accept"
+#     response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+#     response.headers["Access-Control-Allow-Origin"] = "*"
+#     return response
 
 
 # Cria Prod.
