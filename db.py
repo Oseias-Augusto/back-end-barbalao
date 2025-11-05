@@ -12,6 +12,10 @@ while True:
         )
         cursor = conn.cursor()
 
+        cursor.execute("DROP TABLE IF EXISTS categoria CASCADE;")
+        conn.commit()
+
+
         cursor.execute('''
                             CREATE TABLE IF NOT EXISTS users(
                             iduser SERIAL PRIMARY KEY,
@@ -42,8 +46,7 @@ while True:
                     id_prod  SERIAL PRIMARY KEY,
                     image   TEXT,
                     name    TEXT NOT NULL,
-                    price   REAL NOT NULL,
-                    
+                    price   REAL NOT NULL
                 );
             '''
             # categ_id    INTEGER NOT NULL,
