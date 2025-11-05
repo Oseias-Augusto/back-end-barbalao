@@ -13,6 +13,7 @@ while True:
         cursor = conn.cursor()
 
         cursor.execute("DROP TABLE IF EXISTS categoria CASCADE;")
+        cursor.execute("DROP TABLE IF EXISTS products CASCADE;")
         conn.commit()
 
 
