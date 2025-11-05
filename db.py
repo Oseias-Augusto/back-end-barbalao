@@ -47,7 +47,8 @@ while True:
                     id_prod  SERIAL PRIMARY KEY,
                     image   TEXT,
                     name    TEXT NOT NULL,
-                    price   REAL NOT NULL
+                    price   REAL NOT NULL,
+                    descricao TEXT 
                 );
             '''
             # categ_id    INTEGER NOT NULL,

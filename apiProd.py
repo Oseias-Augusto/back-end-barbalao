@@ -52,6 +52,7 @@ def create_product():
         name = data.get('nome')
         image = data.get('imagem')
         price = data.get('preco')
+        descricao = data.get('descricao')
         # categ_id = data.get('categ_id')
 
         print(f"Nome: {name}, Preço: {price}, Imagem: {type(image)}")
@@ -65,10 +66,10 @@ def create_product():
 
         cursor.execute(
             '''
-             INSERT INTO products(name, price, image)
-             VALUES (%s, %s, %s)
+             INSERT INTO products(name, price, image, descricao)
+             VALUES (%s, %s, %s, %s)
              RETURNING id_prod
-            ''', (name, float(price), image)
+            ''', (name, float(price), image, descricao)
         )
         
         conn.commit()
@@ -90,7 +91,7 @@ def list_products():
     try:
         conn = get_conn()
         cursor = conn.cursor()
-        cursor.execute('''SELECT id_prod, image, name, price FROM products;''')
+        cursor.execute('''SELECT id_prod, image, name, price, descricao FROM products;''')
         rows = cursor.fetchall()
 
         conn.close()
@@ -100,7 +101,8 @@ def list_products():
                 'id_prod': row[0],
                 'image': row[1],
                 'name': row[2],
-                'price': float(row[3])
+                'price': float(row[3]),
+                'descricao': row[4]
             } for row in rows
         ]
 
