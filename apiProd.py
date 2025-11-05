@@ -81,12 +81,19 @@ def list_products():
     try:
         conn = get_conn()
         cursor = conn.cursor()
-        cursor.execute('''SELECT idprod, image, name, price FROM products;''')
+        cursor.execute('''SELECT id_prod, image, name, price FROM products;''')
         rows = cursor.fetchall()
 
         conn.close()
 
-        products = [dict(row) for row in rows]
+        products = [
+            {
+                'id_prod': row[0],
+                'image': row[1],
+                'name': row[2],
+                'price': row[3]
+            } for row in rows
+        ]
 
         return jsonify(products), 200
     
@@ -101,11 +108,11 @@ def update_products(product_id, product_name = None, product_image = None, produ
         conn = get_conn()
         cursor = conn.cursor()
         if product_name:
-            cursor.execute('UPDATE products SET name = %s WHERE idprod = %s;', (product_name, product_id))
+            cursor.execute('UPDATE products SET name = %s WHERE id_prod = %s;', (product_name, product_id))
         if product_image:
-            cursor.execute('UPDATE products SET image = %s WHERE idprod = %s;', (product_image, product_id))
+            cursor.execute('UPDATE products SET image = %s WHERE id_prod = %s;', (product_image, product_id))
         if product_price:
-            cursor.execute('UPDATE products SET price = %s WHERE idprod = %s;', (product_image, product_id))
+            cursor.execute('UPDATE products SET price = %s WHERE id_prod = %s;', (product_image, product_id))
 
         conn.commit()
         cursor.close()
@@ -125,7 +132,7 @@ def remove_product(product_id):
     try:
         conn = get_conn()
         cursor = conn.cursor()
-        cursor.execute('DELETE FROM products WHERE idprod = %s', (product_id,))
+        cursor.execute('DELETE FROM products WHERE id_prod = %s', (product_id,))
         conn.commit()
         conn.close()
 
