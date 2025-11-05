@@ -12,7 +12,13 @@ CORS(app, origins=[
 
 
 def get_conn():
-    conn = psycopg2.connect('barbalao.db')
+    conn = psycopg2.connect(
+            host="dpg-d42kp3i4d50c739qr750-a.render.com",
+            port="5432",
+            database="banco_barbalao",
+            user="root",
+            password="DdDLJr8BYykOf9hJL9TWXP2eDsF2A8S6"        
+    )
     conn.row_factory = psycopg2.Row
     return conn
 
@@ -50,7 +56,7 @@ def create_product():
         cursor.execute(
             '''
              INSERT INTO products(name, price, image, categ_id)
-             VALUES (?, ?, ?, ?)
+             VALUES (%s, %s, %s, %s)
             ''', (name, price, image, categ_id))
         
         conn.commit()
@@ -92,11 +98,11 @@ def update_products(product_id, product_name = None, product_image = None, produ
         conn = get_conn()
         cursor = conn.cursor()
         if product_name:
-            cursor.execute('UPDATE products SET name = ? WHERE idprod = ?;', (product_name, product_id))
+            cursor.execute('UPDATE products SET name = %s WHERE idprod = %s;', (product_name, product_id))
         if product_image:
-            cursor.execute('UPDATE products SET image = ? WHERE idprod = ?;', (product_image, product_id))
+            cursor.execute('UPDATE products SET image = %s WHERE idprod = %s;', (product_image, product_id))
         if product_price:
-            cursor.execute('UPDATE products SET price = ? WHERE idprod = ?;', (product_image, product_id))
+            cursor.execute('UPDATE products SET price = %s WHERE idprod = %s;', (product_image, product_id))
 
         conn.commit()
         cursor.close()
@@ -116,7 +122,7 @@ def remove_product(product_id):
     try:
         conn = get_conn()
         cursor = conn.cursor()
-        cursor.execute('DELETE FROM products WHERE idprod = ?', (product_id,))
+        cursor.execute('DELETE FROM products WHERE idprod = %s', (product_id,))
         conn.commit()
         conn.close()
 
