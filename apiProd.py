@@ -56,9 +56,9 @@ def create_product():
 
         cursor.execute(
             '''
-             INSERT INTO products(name, price, image, categ_id)
-             VALUES (%s, %s, %s, %s)
-            ''', (name, float(price), image, int(categ_id))
+             INSERT INTO products(name, price, image)
+             VALUES (%s, %s, %s)
+            ''', (name, float(price), image)
         )
         
         conn.commit()
