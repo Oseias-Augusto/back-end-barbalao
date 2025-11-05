@@ -134,6 +134,9 @@ def update_products(product_id, product_name = None, product_image = None, produ
 # Apaga Prod.
 @app.route('/api/products/remove/<int:product_id>/', methods=['DELETE'])
 def remove_product(product_id):
+    if request.method == 'OPTIONS':
+        # resposta automática para o preflight
+        return jsonify({'message': 'ok'}), 200
 
     try:
         conn = get_conn()
