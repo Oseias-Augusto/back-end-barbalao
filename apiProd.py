@@ -23,10 +23,14 @@ def get_conn():
 
 @app.after_request
 def add_header(response):
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["Access-Control-Allow-Headers"] = "Origin, X-Requested-With, Content-Type, Accept"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
-    response.headers["Access-Control-Allow-Origin"] = "*"
+    # response.headers["X-Content-Type-Options"] = "nosniff"
+    # response.headers["Access-Control-Allow-Headers"] = "Origin, X-Requested-With, Content-Type, Accept"
+    # response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    # response.headers["Access-Control-Allow-Origin"] = "*"
+    response = jsonify({'message': 'ok'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+    response.headers.add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
     return response
 
 
@@ -130,6 +134,7 @@ def update_products(product_id, product_name = None, product_image = None, produ
 # Apaga Prod.
 @app.route('/api/products/remove/<int:product_id>/', methods=['DELETE'])
 def remove_product(product_id):
+
     try:
         conn = get_conn()
         cursor = conn.cursor()
