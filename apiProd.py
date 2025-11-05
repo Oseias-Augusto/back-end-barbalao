@@ -9,10 +9,14 @@ app = Flask(__name__)
 #         "https://barbalao.vercel.app",
 #         "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev"
 # ])
-CORS(app, resources={r"/api/*": {"origins": [
-    "https://barbalao.vercel.app",
-    "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev"
-]}}, supports_credentials=True)
+CORS(app, resources={r"/api/*": {
+    "origins": [
+        "https://barbalao.vercel.app",
+        "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev"
+    ],
+    "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    "allow_headers": ["Content-Type", "Authorization"]
+}})
 
 
 def get_conn():
@@ -132,11 +136,8 @@ def update_products(product_id, product_name = None, product_image = None, produ
         return jsonify({"message": "Erro Interno"}), 500
 
 # Apaga Prod.
-@app.route('/api/products/remove/<int:product_id>/', methods=['DELETE', 'OPTIONS'])
+@app.route('/api/products/remove/<int:product_id>/', methods=['DELETE'])
 def remove_product(product_id):
-    if request.method == 'OPTIONS':
-        # resposta automática para o preflight
-        return jsonify({'message': 'ok'}), 200
 
     try:
         conn = get_conn()
