@@ -4,7 +4,7 @@ from encrypt import hash_password
 while True:
     try:
         conn = psycopg2.connect(
-            host="dpg-d42kp3i4d50c739qr750-a.render.com",
+            host="postgresql://root:DdDLJr8BYykOf9hJL9TWXP2eDsF2A8S6@dpg-d42kp3i4d50c739qr750-a.oregon-postgres.render.com/banco_barbalao",
             port="5432",
             database="banco_barbalao",
             user="root",
