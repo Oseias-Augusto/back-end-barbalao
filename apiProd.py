@@ -132,7 +132,7 @@ def update_products(product_id, product_name = None, product_image = None, produ
         return jsonify({"message": "Erro Interno"}), 500
 
 # Apaga Prod.
-@app.route('/api/products/remove/<int:product_id>/', methods=['DELETE'])
+@app.route('/api/products/remove/<int:product_id>/', methods=['DELETE', 'OPTIONS'])
 def remove_product(product_id):
     if request.method == 'OPTIONS':
         # resposta automática para o preflight
