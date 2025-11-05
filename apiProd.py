@@ -13,11 +13,11 @@ CORS(app, origins=[
 
 def get_conn():
     conn = psycopg2.connect(
-            host="postgresql://root:DdDLJr8BYykOf9hJL9TWXP2eDsF2A8S6@dpg-d42kp3i4d50c739qr750-a/banco_barbalao",
-            port="5432",
-            database="banco_barbalao",
-            user="root",
-            password="DdDLJr8BYykOf9hJL9TWXP2eDsF2A8S6"        
+            dbname="banco_barbalao",  
+            user="root",       
+            password="DdDLJr8BYykOf9hJL9TWXP2eDsF2A8S6",    
+            host="dpg-d42kp3i4d50c739qr750-a.oregon-postgres.render.com",            
+            port="5432"      
     )
     return conn
 
