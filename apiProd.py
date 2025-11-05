@@ -53,6 +53,8 @@ def create_product():
 
         conn = get_conn()
         cursor = conn.cursor()
+        colnames = [desc[0] for desc in cursor.description]
+        products = [dict(zip(colnames, row)) for row in rows]
 
         cursor.execute(
             '''
