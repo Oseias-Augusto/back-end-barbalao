@@ -134,10 +134,15 @@ def remove_product(product_id):
         cursor = conn.cursor()
         cursor.execute('DELETE FROM products WHERE id_prod = %s', (product_id,))
         conn.commit()
-        conn.close()
+        
 
         if cursor.rowcount == 0:
+            cursor.close()
+            conn.close()
             return jsonify({"message": "Produto não encontrado"}), 404
+
+        cursor.close()
+        conn.close()
 
         return jsonify({"message": "Produto removido com sucesso"}), 200
 
