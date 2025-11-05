@@ -100,7 +100,7 @@ def list_products():
                 'id_prod': row[0],
                 'image': row[1],
                 'name': row[2],
-                'price': row[3]
+                'price': float(row[3])
             } for row in rows
         ]
 
