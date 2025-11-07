@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 # CORS(app, origins=[
 #         "http://localhost:5173/",
-#         "https://barbalao.vercel.app",
+#         "https://barbalao.vercel.app",a
 #         "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev"
 
 # ])
@@ -15,7 +15,7 @@ CORS(app, resources={r"/api/*": {
         "https://barbalao.vercel.app",
         "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev",
         "https://dark-sorcery-q76pqgjx9r6q2xqrj-5174.app.github.dev",
-        "http://localhost:5173/"
+        "http://localhost:5173"
     ],
     "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     "allow_headers": ["Content-Type", "Authorization"]
