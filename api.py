@@ -3,17 +3,14 @@ from flask_cors import CORS
 import sqlite3
 import os
 from encrypt import verify_password
+import apiProd
 
-app = Flask(__name__)
+app = apiProd.app
 CORS(app, origins=["http://localhost:5174",
         "https://barbalao.vercel.app"]) 
 
-# função para abrir e fechar a conexão com o banco, ao inves de ficar aberto toda hora tava dando DB is locked
-def get_conn():
-    caminhoBanco = os.path.join(os.path.dirname(__file__), '..', 'db', 'barbalao.db')
-    conn = sqlite3.connect(caminhoBanco)
-    conn.row_factory = sqlite3.Row
-    return conn
+
+get_conn = app.get_conn()
 
 
 @app.route('/api/login', methods=['POST'])
@@ -31,7 +28,7 @@ def api_server():
             nome = data.get('nome')
             senha = data.get('senha')
 
-            conn = get_conn()
+            conn = get_conn
             cursor = conn.cursor()
 
             cursor.execute('SELECT * FROM users WHERE nome = ?', (nome,))
