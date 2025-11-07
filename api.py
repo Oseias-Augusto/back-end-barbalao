@@ -1,12 +1,10 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
-import sqlite3
 import os
 from encrypt import verify_password
 import apiProd
 
 app = apiProd.app
-CORS(app, origins=["http://localhost:5174",
+apiProd.CORS(app, origins=["http://localhost:5174",
         "https://barbalao.vercel.app"]) 
 
 
