@@ -5,9 +5,10 @@ import os
 
 app = Flask(__name__)
 # CORS(app, origins=[
-#         "http://localhost:5174",
+#         "http://localhost:5173/",
 #         "https://barbalao.vercel.app",
 #         "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev"
+
 # ])
 CORS(app, resources={r"/api/*": {
     "origins": [
