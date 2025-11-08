@@ -1,5 +1,5 @@
 import psycopg2
-# from encrypt import hash_password
+from encrypt import hash_password
 
 while True:
     try:
@@ -28,10 +28,15 @@ while True:
         # cursor.execute('''
         #                     INSERT INTO users(nome, hash)
         #                     VALUES(%s, %s);
-        #             ''', ('EDUARDO', 'Barbalao123'))
-        #             # hash_password('Barbalao123')
+        #             ''', ('EDUARDO', hash_password('Barbalao123')))
 
 
+        cursor.execute('''
+                        SELECT * FROM users;
+                    ''')
+        user = cursor.fetchall()
+        for u in user:
+            print(u)
         # cursor.execute(
         #     '''
         #         CREATE TABLE IF NOT EXISTS categoria(
@@ -41,6 +46,7 @@ while True:
         #         )
         #     '''
         # )
+
         cursor.execute(
             '''
                 CREATE TABLE IF NOT EXISTS products(

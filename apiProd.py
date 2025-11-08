@@ -62,7 +62,7 @@ def api_server():
             cursor.execute('SELECT * FROM users WHERE nome = %s', (nome,))
             usuario = cursor.fetchone()
             if usuario:
-                if verify_password(usuario[1], senha):
+                if verify_password(usuario[39], senha):
                     return jsonify({"message": "OK"}), 200
                 else:
                     return jsonify({"message": "Usuário ou senha incorretos"}), 401
@@ -73,7 +73,7 @@ def api_server():
              print(f"Erro usuário não encontrado: {e}")
              cursor.close()
              conn.close()    
-        return jsonify({"route": "/login", "status": 500})
+        return jsonify({"status": 500})
 
 
 # Cria Prod.
