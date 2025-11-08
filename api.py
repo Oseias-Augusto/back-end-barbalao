@@ -11,7 +11,7 @@ apiProd.CORS(app, origins=["http://localhost:5174",
 get_conn = app.get_conn()
 
 
-@app.route('/api/login', methods=['POST'])
+@app.route('/api/login/', methods=['POST'])
 def api_server():
         try:
             
