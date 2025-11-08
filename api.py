@@ -1,4 +1,3 @@
-from flask import Flask, request, jsonify
 import os
 from encrypt import verify_password
 from apiProd import app, get_conn
