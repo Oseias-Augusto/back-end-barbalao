@@ -4,8 +4,7 @@ from encrypt import verify_password
 from apiProd import app, get_conn
 
 app = apiProd.app
-
-get_conn = app.get_conn()
+get_conn = apiProd.get_conn
 
 
 @app.route('/api/login/', methods=['POST'])
