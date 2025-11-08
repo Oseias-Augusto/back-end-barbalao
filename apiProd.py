@@ -62,7 +62,7 @@ def api_server():
             cursor.execute('SELECT * FROM users WHERE nome = %s', (nome,))
             usuario = cursor.fetchone()
             if usuario:
-                if verify_password(usuario[3], senha):
+                if verify_password(usuario[2], senha):
                     return jsonify({"message": "OK"}), 200
                 else:
                     return jsonify({"message": "Usuário ou senha incorretos"}), 401
