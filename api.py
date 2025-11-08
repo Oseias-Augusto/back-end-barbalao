@@ -3,10 +3,6 @@ import os
 from encrypt import verify_password
 from apiProd import app, get_conn
 
-app = apiProd.app
-get_conn = apiProd.get_conn
-
-
 @app.route('/api/login/', methods=['POST'])
 def api_server():
         try:
@@ -15,7 +11,6 @@ def api_server():
 
             if data == None:
                 return jsonify({
-                "route": "/login",
                 "message": "JSON inválido ou ausente na requisição"
             }), 400
 
@@ -31,14 +26,12 @@ def api_server():
             if usuario != None:
                 if verify_password(usuario[2], senha):
                         result = {
-                            "route": "/form", 
                             "message": "OK"
                         }
                         print(result)
                         return jsonify(result), 200
                 
                 return jsonify({
-                "route": "/login",
                 "message": "Usuário ou senha incorretos"
             }), 400
 
