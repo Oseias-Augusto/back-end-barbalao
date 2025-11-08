@@ -1,12 +1,9 @@
 from flask import Flask, request, jsonify
 import os
 from encrypt import verify_password
-import apiProd
+from apiProd import app, get_conn
 
 app = apiProd.app
-apiProd.CORS(app, origins=["http://localhost:5174",
-        "https://barbalao.vercel.app"]) 
-
 
 get_conn = app.get_conn()
 
