@@ -11,7 +11,12 @@ app = Flask(__name__)
 
 # ])
 CORS(app, resources={r"/api/*": {
-    "origins": "*",
+    "origins": [
+        "https://barbalao.vercel.app",
+        "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev",
+        "https://dark-sorcery-q76pqgjx9r6q2xqrj-5174.app.github.dev",
+        "http://localhost:5173"
+    ],
     "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     "allow_headers": ["Content-Type", "Authorization"]
 }})

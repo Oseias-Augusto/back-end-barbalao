@@ -5,9 +5,10 @@ from apiProd import app, get_conn
 
 @app.route('/api/login/', methods=['POST'])
 def api_server():
+        if request.method == 'OPTIONS':
+            return jsonify({"message": "CORS preflight OK"}), 200
+        data = request.get_json()
         try:
-            
-            data = request.get_json()
 
             if data == None:
                 return jsonify({
