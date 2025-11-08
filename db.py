@@ -25,22 +25,22 @@ while True:
                     );
                         ''')
         
-        # cursor.execute('''
-        #                     INSERT INTO users(nome, hash)
-        #                     VALUES(%s, %s);
-        #             ''', ('EDUARDO', 'Barbalao123'))
-        #             # hash_password('Barbalao123')
+        cursor.execute('''
+                            INSERT INTO users(nome, hash)
+                            VALUES(%s, %s);
+                    ''', ('EDUARDO', 'Barbalao123'))
+                    # hash_password('Barbalao123')
 
 
-        # cursor.execute(
-        #     '''
-        #         CREATE TABLE IF NOT EXISTS categoria(
-        #             id_categ        SERIAL PRIMARY KEY,
-        #             name_categ      TEXT NOT NULL,
-        #             image_categ     TEXT
-        #         )
-        #     '''
-        # )
+        cursor.execute(
+            '''
+                CREATE TABLE IF NOT EXISTS categoria(
+                    id_categ        SERIAL PRIMARY KEY,
+                    name_categ      TEXT NOT NULL,
+                    image_categ     TEXT
+                )
+            '''
+        )
         cursor.execute(
             '''
                 CREATE TABLE IF NOT EXISTS products(
