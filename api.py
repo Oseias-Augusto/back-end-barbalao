@@ -22,22 +22,14 @@ def api_server():
 
             cursor.execute('SELECT * FROM users WHERE nome = %s', (nome,))
             usuario = cursor.fetchone()
-            
-            if usuario != None:
-                if verify_password(usuario[2], senha):
-                        result = {
-                            "message": "OK"
-                        }
-                        print(result)
-                        cursor.close()
-                        conn.close()
-                        return jsonify(result), 200
-                
-                return jsonify({
-                "message": "Usuário ou senha incorretos"
-            }), 400
+            if usuario:
+                if verify_password(usuario[1], senha):
+                    return jsonify({"message": "OK"}), 200
+                else:
+                    return jsonify({"message": "Usuário ou senha incorretos"}), 401
+            else:
+                return jsonify({"message": "Usuário não encontrado"}), 404
 
-            conn.close()
         except TypeError as e:
              print(f"Erro usuário não encontrado: {e}")
              cursor.close()
