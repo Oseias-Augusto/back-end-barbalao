@@ -28,15 +28,10 @@ while True:
         # cursor.execute('''
         #                     INSERT INTO users(nome, hash)
         #                     VALUES(%s, %s);
-        #             ''', ('EDUARDO', hash_password('Barbalao123')))
+        #             ''', ('EDUARDO', 'Barbalao123'))
+        #             # hash_password('Barbalao123')
 
 
-        cursor.execute('''
-                        SELECT * FROM users;
-                    ''')
-        user = cursor.fetchall()
-        for u in user:
-            print(u)
         # cursor.execute(
         #     '''
         #         CREATE TABLE IF NOT EXISTS categoria(
@@ -46,7 +41,6 @@ while True:
         #         )
         #     '''
         # )
-
         cursor.execute(
             '''
                 CREATE TABLE IF NOT EXISTS products(
