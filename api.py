@@ -20,7 +20,7 @@ def api_server():
             conn = get_conn()
             cursor = conn.cursor()
 
-            cursor.execute('SELECT * FROM users WHERE nome = ?', (nome,))
+            cursor.execute('SELECT * FROM users WHERE nome = %s', (nome,))
             usuario = cursor.fetchone()
             
             if usuario != None:
@@ -29,6 +29,8 @@ def api_server():
                             "message": "OK"
                         }
                         print(result)
+                        cursor.close()
+                        conn.close()
                         return jsonify(result), 200
                 
                 return jsonify({
@@ -37,9 +39,8 @@ def api_server():
 
             conn.close()
         except TypeError as e:
-             print(f"Erro usuário não encontrado: {e}")        
+             print(f"Erro usuário não encontrado: {e}")
+             cursor.close()
+             conn.close()    
         return jsonify({"route": "/login", "status": 500})
 
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))  # Render define PORT
-    app.run(host="0.0.0.0", port=port)
