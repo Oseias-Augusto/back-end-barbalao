@@ -1,5 +1,6 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from encrypt import verify_password
+from datetime import timedelta
 from flask_cors import CORS
 import psycopg2
 import os
@@ -22,6 +23,9 @@ CORS(app, resources={r"/api/*": {
     "allow_headers": ["Content-Type", "Authorization"]
 }})
 
+app.secret_key = '4af61d297ff9bcb7358f01f9ae61a6fc'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
+
 def get_conn():
     conn = psycopg2.connect(
             dbname="banco_barbalao",  
@@ -39,6 +43,13 @@ def get_conn():
 #     response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
 #     response.headers["Access-Control-Allow-Origin"] = "*"
 #     return response
+
+# @app.route('/')
+# def init():
+#     return render_template_string("""
+#                                     {% if session['email'] %}
+#                                         <h1>Hello World!</h1>}
+#                                   """)
 
 #login
 @app.route('/api/login/', methods=['POST'])
@@ -61,14 +72,27 @@ def api_server():
 
             cursor.execute('SELECT * FROM users WHERE nome = %s', (nome,))
             usuario = cursor.fetchone()
+
             if usuario:
                 if verify_password(usuario[2], senha):
-                    return jsonify({"message": "OK"}), 200
-                else:
-                    return jsonify({"message": "Usuário ou senha incorretos"}), 401
-            else:
-                return jsonify({"message": "Usuário não encontrado"}), 404
 
+                    session['user'] = nome
+                    session.permanent = True
+                    conn.close()  
+                    cursor.close()
+                    return jsonify({"message": "OK"}), 200
+                
+                else:
+
+                    cursor.close()  
+                    conn.close()  
+                    return jsonify({"message": "Usuário ou senha incorretos"}), 401
+                
+            else:
+                cursor.close()
+                conn.close()   
+                return jsonify({"message": "Usuário não encontrado"}), 404
+  
         except TypeError as e:
              print(f"Erro usuário não encontrado: {e}")
              cursor.close()
