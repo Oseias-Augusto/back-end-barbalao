@@ -19,7 +19,8 @@ CORS(app, resources={r"/api/*": {
         "https://dark-sorcery-q76pqgjx9r6q2xqrj-5174.app.github.dev"
     ],
     "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    "allow_headers": ["Content-Type", "Authorization"]
+    "allow_headers": ["Content-Type", "Authorization"],
+    "supports_credentials": True
 }})
 
 def get_conn():
@@ -63,6 +64,7 @@ def api_server():
             usuario = cursor.fetchone()
             if usuario:
                 if verify_password(usuario[2], senha):
+                    
                     return jsonify({"message": "OK"}), 200
                 else:
                     return jsonify({"message": "Usuário ou senha incorretos"}), 401
