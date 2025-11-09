@@ -32,6 +32,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 app.config.update( 
     SESSION_COOKIE_SAMESITE='None',
     SESSION_COOKIE_SECURE=True 
+    SESSION_COOKIE_DOMAIN=None  
 )
 
 def get_conn():
