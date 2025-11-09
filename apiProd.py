@@ -102,7 +102,7 @@ def api_server():
              print(f"Erro usuário não encontrado: {e}")
              cursor.close()
              conn.close()    
-        return jsonify({"status": 500})
+        return jsonify({"message": "Erro no servidor, tente mais tarde", "status": 500})
 
 
 #checa se o cookie user existe 
