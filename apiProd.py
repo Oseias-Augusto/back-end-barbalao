@@ -45,10 +45,9 @@ def get_conn():
 #     response.headers["Access-Control-Allow-Origin"] = "*"
 #     return response
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def init():
     return render_template_string("""
-                                    {% if session['email'] %}
                                         <h1>Hello World!</h1>}
                                   """)
 
