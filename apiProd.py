@@ -18,6 +18,7 @@ CORS(app, resources={
             "http://localhost:5173",
             "https://barbalao.vercel.app",
             "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev",
+            "https://dark-sorcery-q76pqgjx9r6q2xqrj-5173.app.github.dev",
             "https://dark-sorcery-q76pqgjx9r6q2xqrj-5174.app.github.dev"
         ],
         "supports_credentials": True,
