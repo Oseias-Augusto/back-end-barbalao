@@ -12,17 +12,19 @@ app = Flask(__name__)
 #         "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev"
 
 # ])
-CORS(app, resources={r"/api/*": {
-    "origins": [
-        "http://localhost:5173",
-        "https://barbalao.vercel.app",
-        "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev",
-        "https://dark-sorcery-q76pqgjx9r6q2xqrj-5174.app.github.dev"
-    ],
-    "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    "allow_headers": ["Content-Type", "Authorization"],
-    "supports_credentials": True
-}})
+CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "http://localhost:5173",
+            "https://barbalao.vercel.app",
+            "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev",
+            "https://dark-sorcery-q76pqgjx9r6q2xqrj-5174.app.github.dev"
+        ],
+        "supports_credentials": True,
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"]
+    }
+})
 
 app.secret_key = '4af61d297ff9bcb7358f01f9ae61a6fc'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
