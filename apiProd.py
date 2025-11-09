@@ -28,6 +28,7 @@ CORS(app, resources={
 
 app.secret_key = '4af61d297ff9bcb7358f01f9ae61a6fc'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
+cookie_value = "wekdoWKGFKGK1234553"
 
 app.config.update( 
     SESSION_COOKIE_SAMESITE='None',
@@ -56,7 +57,7 @@ def get_conn():
 @app.route('/', methods=['GET'])
 def init():
     return render_template_string("""
-                                        <h1>Hello World!</h1>}
+                                        <h1>Hello World!</h1>
                                   """)
 
 #login
@@ -84,7 +85,7 @@ def api_server():
             if usuario:
                 if verify_password(usuario[2], senha):
 
-                    session['user'] = hash_password(nome)
+                    session['user'] = cookie_value
                     session['session'] = "barbalao"
                     session.permanent = True
                     conn.close()  
@@ -92,7 +93,7 @@ def api_server():
                     return jsonify({"message": "OK"}), 200
                 
                 else:
-
+                    
                     cursor.close()  
                     conn.close()  
                     return jsonify({"message": "Usuário ou senha incorretos"}), 401
@@ -107,10 +108,11 @@ def api_server():
 #checa se o cookie user existe 
 @app.route('/api/check_session/', methods=['GET'])
 def check_session():
-    if "user" in session:
-        return jsonify({"authenticated": True, "user": session["user"]}), 200
-    
-    return jsonify({"authenticated": False}), 401
+        
+        if session.get('user') == cookie_value:
+            return jsonify({"authenticated": True, "user": session["user"]}), 200 
+        else:
+            return jsonify({"authenticated": False}), 401
 
 
 # Cria Prod.
