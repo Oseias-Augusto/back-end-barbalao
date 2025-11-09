@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, render_template_string
 from encrypt import verify_password
 from datetime import timedelta
 from flask_cors import CORS
@@ -45,12 +45,12 @@ def get_conn():
 #     response.headers["Access-Control-Allow-Origin"] = "*"
 #     return response
 
-# @app.route('/')
-# def init():
-#     return render_template_string("""
-#                                     {% if session['email'] %}
-#                                         <h1>Hello World!</h1>}
-#                                   """)
+@app.route('/')
+def init():
+    return render_template_string("""
+                                    {% if session['email'] %}
+                                        <h1>Hello World!</h1>}
+                                  """)
 
 #login
 @app.route('/api/login/', methods=['POST'])
