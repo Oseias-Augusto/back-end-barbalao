@@ -20,7 +20,8 @@ CORS(app, resources={r"/api/*": {
         "https://dark-sorcery-q76pqgjx9r6q2xqrj-5174.app.github.dev"
     ],
     "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    "allow_headers": ["Content-Type", "Authorization"]
+    "allow_headers": ["Content-Type", "Authorization"],
+    "supports_credentials": True
 }})
 
 app.secret_key = '4af61d297ff9bcb7358f01f9ae61a6fc'
