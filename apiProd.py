@@ -85,7 +85,7 @@ def api_server():
             if usuario:
                 if verify_password(usuario[2], senha):
 
-                    session['user'] = usuario[1]
+                    session[cookie_value] = usuario[1]
                     session['token'] = cookie_value
                     session.permanent = True
                     conn.close()  
@@ -108,7 +108,7 @@ def api_server():
 #checa se o cookie user existe 
 @app.route('/api/check_session/', methods=['GET'])
 def check_session():
-        if "user" in session:
+        if cookie_value in session:
             return jsonify({"authenticated": True, "user": session["user"]}), 200
         else:
             return jsonify({"authenticated": False}), 401
