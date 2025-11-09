@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, session, render_template_string
-from encrypt import verify_password
+from encrypt import verify_password, hash_password
 from datetime import timedelta
 from flask_cors import CORS
 import psycopg2
@@ -83,7 +83,8 @@ def api_server():
             if usuario:
                 if verify_password(usuario[2], senha):
 
-                    session['user'] = nome
+                    session['user'] = hash_password(nome)
+                    session['session'] = "barbalao"
                     session.permanent = True
                     conn.close()  
                     cursor.close()
