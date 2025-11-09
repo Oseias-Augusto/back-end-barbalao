@@ -29,6 +29,11 @@ CORS(app, resources={
 app.secret_key = '4af61d297ff9bcb7358f01f9ae61a6fc'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 
+app.config.update( 
+    SESSION_COOKIE_SAMESITE='None',
+    SESSION_COOKIE_SECURE=True 
+)
+
 def get_conn():
     conn = psycopg2.connect(
             dbname="banco_barbalao",  
@@ -89,11 +94,6 @@ def api_server():
                     cursor.close()  
                     conn.close()  
                     return jsonify({"message": "Usuário ou senha incorretos"}), 401
-                
-            else:
-                cursor.close()
-                conn.close()   
-                return jsonify({"message": "Usuário não encontrado"}), 404
   
         except TypeError as e:
              print(f"Erro usuário não encontrado: {e}")
