@@ -74,8 +74,8 @@ def api_server():
                 "message": "JSON inválido ou ausente na requisição"
             }), 400
 
-            nome = data.get('nome_user')
-            senha = data.get('hash')
+            nome = data.get('nome')
+            senha = data.get('senha')
 
             conn = get_conn()
             cursor = conn.cursor()
