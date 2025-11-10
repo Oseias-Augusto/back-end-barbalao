@@ -80,7 +80,7 @@ def api_server():
             conn = get_conn()
             cursor = conn.cursor()
 
-            cursor.execute('SELECT * FROM users WHERE nome = %s', (nome,))
+            cursor.execute('SELECT * FROM usuarios WHERE nome = %s', (nome,))
             usuario = cursor.fetchone()
 
             if usuario:
@@ -106,11 +106,11 @@ def api_server():
         return jsonify({"message": "Erro no servidor, tente mais tarde", "status": 500})
 
 
-#checa se o cookie user existe 
+#checa se o cookie usuario existe 
 @app.route('/api/check_session/', methods=['GET'])
 def check_session():
         if cookie_value in session:
-            return jsonify({"authenticated": True, "user": session["user"]}), 200
+            return jsonify({"authenticated": True, "usuario": session["usuario"]}), 200
         else:
             return jsonify({"authenticated": False}), 401
 
@@ -126,27 +126,27 @@ def create_product():
             print("JSON ausente ou inválido")
             return jsonify({"message": "JSON inválido ou ausente"}), 400
         
-        name = data.get('nome')
-        image = data.get('imagem')
-        price = data.get('preco')
-        descricao = data.get('descricao')
+        nome = data.get('nome_prod')
+        preco = data.get('preco_prod')
+        descricao = data.get('descricao_prod')
+        imagem = data.get('imagem_prod')
         # categ_id = data.get('categ_id')
 
-        print(f"Nome: {name}, Preço: {price}, Imagem: {type(image)}")
+        print(f"Nome: {nome}, Preço: {preco}, Imagem: {type(imagem)}")
 
-        if not name or price is None:
+        if not nome or preco is None:
             print("Campos obrigatórios ausentes")
-            return jsonify({"message": "Campos obrigatórios: name e price"}), 400
+            return jsonify({"message": "Campos obrigatórios: name e preco_prod"}), 400
 
         conn = get_conn()
         cursor = conn.cursor()
 
         cursor.execute(
             '''
-             INSERT INTO products(name, price, image, descricao)
+             INSERT INTO produto(nome_prod, preco_prod, descricao_prod, imagem_prod)
              VALUES (%s, %s, %s, %s)
              RETURNING id_prod
-            ''', (name, float(price), image, descricao)
+            ''', (nome, float(preco), descricao, imagem)
         )
         
         conn.commit()
@@ -168,7 +168,7 @@ def list_products():
     try:
         conn = get_conn()
         cursor = conn.cursor()
-        cursor.execute('''SELECT id_prod, image, name, price, descricao FROM products;''')
+        cursor.execute('''SELECT id_prod, nome_prod, preco_prod, descricao_prod, imagem_prod FROM produto;''')
         rows = cursor.fetchall()
 
         conn.close()
@@ -176,10 +176,10 @@ def list_products():
         products = [
             {
                 'id_prod': row[0],
-                'image': row[1],
-                'name': row[2],
-                'price': float(row[3]),
-                'descricao': row[4]
+                'nome_prod': row[1],
+                'preco_prod': float(row[2]),
+                'descricao_prod': row[3],
+                'imagem_prod': row[4]
             } for row in rows
         ]
 
@@ -196,11 +196,11 @@ def update_products(product_id, product_name = None, product_image = None, produ
         conn = get_conn()
         cursor = conn.cursor()
         if product_name:
-            cursor.execute('UPDATE products SET name = %s WHERE id_prod = %s;', (product_name, product_id))
+            cursor.execute('UPDATE produto SET nome_prod = %s WHERE id_prod = %s;', (product_name, product_id))
         if product_image:
-            cursor.execute('UPDATE products SET image = %s WHERE id_prod = %s;', (product_image, product_id))
+            cursor.execute('UPDATE produto SET imagem_prod = %s WHERE id_prod = %s;', (product_image, product_id))
         if product_price:
-            cursor.execute('UPDATE products SET price = %s WHERE id_prod = %s;', (product_image, product_id))
+            cursor.execute('UPDATE produto SET preco_prod = %s WHERE id_prod = %s;', (product_image, product_id))
 
         conn.commit()
         cursor.close()
@@ -221,7 +221,7 @@ def remove_product(product_id):
     try:
         conn = get_conn()
         cursor = conn.cursor()
-        cursor.execute('DELETE FROM products WHERE id_prod = %s', (product_id,))
+        cursor.execute('DELETE FROM produto WHERE id_prod = %s', (product_id,))
         conn.commit()
         
 
