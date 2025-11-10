@@ -80,7 +80,7 @@ def api_server():
             conn = get_conn()
             cursor = conn.cursor()
 
-            cursor.execute('SELECT * FROM usuarios WHERE nome_user = %s', (nome,))
+            cursor.execute('SELECT * FROM usuario WHERE nome_user = %s', (nome,))
             usuario = cursor.fetchone()
 
             if usuario:
