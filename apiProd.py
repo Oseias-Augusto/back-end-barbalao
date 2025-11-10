@@ -74,13 +74,13 @@ def api_server():
                 "message": "JSON inválido ou ausente na requisição"
             }), 400
 
-            nome = data.get('nome')
-            senha = data.get('senha')
+            nome = data.get('nome_user')
+            senha = data.get('hash')
 
             conn = get_conn()
             cursor = conn.cursor()
 
-            cursor.execute('SELECT * FROM usuarios WHERE nome = %s', (nome,))
+            cursor.execute('SELECT * FROM usuarios WHERE nome_user = %s', (nome,))
             usuario = cursor.fetchone()
 
             if usuario:

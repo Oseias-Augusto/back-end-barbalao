@@ -31,12 +31,12 @@ while True:
             '''
         )
         
-        cursor.execute(
-            ''' 
-                INSERT INTO users(nome, hash)
-                VALUES(%s, %s);
-            ''', ('AdminT', hash_password('Barbalao123'))
-        )
+        # cursor.execute(
+        #     ''' 
+        #         INSERT INTO usuario(nome_user, hash)
+        #         VALUES(%s, %s);
+        #     ''', ('AdminT', hash_password('Barbalao123'))
+        # )
 
         cursor.execute(
             '''
@@ -62,7 +62,7 @@ while True:
                     descricao_prod          TEXT    NOT NULL,
                     imagem_prod             TEXT    NOT NULL,
                     categoria_id_categoria  INT     NOT NULL,
-                    usuarios_id_user        INT,
+                    usuario_id_user        INT,
 
 
                     FOREIGN KEY(categoria_id_categoria) REFERENCES categoria(id_categoria),
@@ -73,11 +73,11 @@ while True:
 
         cursor.execute (
             '''
-                CREATE TBLE IF NOT EXISTS adicionais (
+                CREATE TABLE IF NOT EXISTS adicionais (
                     id_adic             SERIAL  PRIMARY KEY,
                     nome_adic           TEXT    NOT NULL,
                     imagem_adic         TEXT    NOT NULL,
-                    usuarios_id_user    INT,
+                    usuario_id_user    INT,
 
                     FOREIGN KEY(usuario_id_user) REFERENCES usuario(id_user)
                 )
@@ -86,12 +86,12 @@ while True:
 
         cursor.execute (
             '''
-                CREATE TBLE IF NOT EXISTS categoria_has_adicionais (
+                CREATE TABLE IF NOT EXISTS categoria_has_adicionais (
                     adicionais_id_adic      INT     NOT NULL,
                     categoria_id_categoria  INT     NOT NULL,
                     preco_adic              REAL,
 
-                    FOREIGN KEY(adicionais_id_adic) REFERENCES adicionais(id_adic)
+                    FOREIGN KEY(adicionais_id_adic) REFERENCES adicionais(id_adic),
                     FOREIGN KEY(categoria_id_categoria) REFERENCES categoria(id_categoria)
                 )
             '''
@@ -104,9 +104,9 @@ while True:
                     titulo_banner       TEXT    NOT NULL,
                     sub_titulo_banner   TEXT,
                     imagem_banner       TEXT    NOT NULL,
-                    usuarios_id_user    INT,
+                    usuario_id_user    INT,
 
-                    FOREIGN KEY(usuarios_id_user) REFERENCES usuario(iduser)
+                    FOREIGN KEY(usuario_id_user) REFERENCES usuario(id_user)
                 )
             '''
         )
