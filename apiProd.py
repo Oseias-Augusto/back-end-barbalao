@@ -13,6 +13,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
 CORS(app, 
      origins=[
         "http://localhost:5173",
+        "http://localhost:5174",
         "https://barbalao.vercel.app",
         "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev",
         "https://dark-sorcery-q76pqgjx9r6q2xqrj-5173.app.github.dev",
