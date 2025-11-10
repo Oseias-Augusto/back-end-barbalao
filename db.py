@@ -31,12 +31,12 @@ while True:
             '''
         )
         
-        cursor.execute(
-            ''' 
-                INSERT INTO usuario(nome_user, hash)
-                VALUES(%s, %s);
-            ''', ('AdminT', hash_password('Barbalao123'))
-        )
+        # cursor.execute(
+        #     ''' 
+        #         INSERT INTO usuario(nome_user, hash)
+        #         VALUES(%s, %s);
+        #     ''', ('AdminT', hash_password('Barbalao123'))
+        # )
 
         cursor.execute(
             '''
