@@ -110,7 +110,7 @@ def api_server():
 @app.route('/api/check_session/', methods=['GET'])
 def check_session():
         if cookie_value in session:
-            return jsonify({"authenticated": True, "usuario": session["usuario"]}), 200
+            return jsonify({"authenticated": True, "user": session["user"]}), 200
         else:
             return jsonify({"authenticated": False}), 401
 
