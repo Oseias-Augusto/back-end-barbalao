@@ -4,6 +4,7 @@ from datetime import timedelta
 from flask_cors import CORS
 import psycopg2
 import os
+import traceback
 
 app = Flask(__name__)
 
@@ -30,14 +31,12 @@ cookie_value = "wekdoWKGFKGK1234553"
 
 # ⚙️ Configuração dinâmica: local vs produção
 if os.environ.get("RENDER") == "true":
-    # Ambiente de produção (Render + HTTPS)
     app.config.update(
         SESSION_COOKIE_SAMESITE='None',
         SESSION_COOKIE_SECURE=True,
         SESSION_COOKIE_DOMAIN=".onrender.com"
     )
 else:
-    # Ambiente local (HTTP)
     app.config.update(
         SESSION_COOKIE_SAMESITE='Lax',
         SESSION_COOKIE_SECURE=False,
@@ -63,14 +62,17 @@ def init():
 # ========== LOGIN ==========
 @app.route('/api/login/', methods=['POST'])
 def api_login():
-    data = request.get_json()
-    if not data:
-        return jsonify({"message": "JSON inválido ou ausente"}), 400
-
-    nome = data.get('nome_user')
-    senha = data.get('hash')
-
     try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"message": "JSON inválido ou ausente"}), 400
+
+        nome = data.get('nome_user')
+        senha = data.get('senha')  # <-- alterado: senha em texto, não hash
+
+        if not nome or not senha:
+            return jsonify({"message": "Campos 'nome_user' e 'senha' são obrigatórios"}), 400
+
         conn = get_conn()
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM usuario WHERE nome_user = %s', (nome,))
@@ -79,25 +81,30 @@ def api_login():
         if not usuario:
             return jsonify({"message": "Usuário não encontrado"}), 404
 
-        # ⚠️ Verifique o índice da senha conforme sua tabela
-        # (ajuste aqui se necessário)
-        if verify_password(senha, usuario[2]):
+        # ⚠️ Ajuste o índice conforme a posição da senha no banco
+        senha_hash_banco = usuario[2]
+
+        if verify_password(senha, senha_hash_banco):
             session["usuario"] = usuario[1]
             session["token"] = cookie_value
             session.permanent = True
 
-            print("Sessão criada com sucesso:", dict(session))
+            print("✅ Sessão criada com sucesso:", dict(session))
             return jsonify({"message": "OK"}), 200
         else:
             return jsonify({"message": "Usuário ou senha incorretos"}), 401
 
     except Exception as e:
-        print(f"Erro no login: {e}")
+        print("🚨 Erro interno no login:", str(e))
+        traceback.print_exc()
         return jsonify({"message": f"Erro no servidor: {str(e)}"}), 500
 
     finally:
-        cursor.close()
-        conn.close()
+        try:
+            cursor.close()
+            conn.close()
+        except:
+            pass
 
 # ========== CHECA SESSÃO ==========
 @app.route('/api/check_session/', methods=['GET'])
@@ -146,6 +153,7 @@ def create_product():
 
     except Exception as e:
         print(f"Erro ao criar produto: {e}")
+        traceback.print_exc()
         return jsonify({"message": f"Erro interno: {str(e)}"}), 500
 
 # ========== LISTAR PRODUTOS ==========
@@ -172,6 +180,7 @@ def list_products():
 
     except Exception as e:
         print(f"Erro ao listar produtos: {e}")
+        traceback.print_exc()
         return jsonify({"message": "Erro Interno"}), 500
 
 # ========== ATUALIZAR PRODUTO ==========
@@ -208,6 +217,7 @@ def update_products(product_id):
 
     except Exception as e:
         print(f"Erro ao atualizar produto: {e}")
+        traceback.print_exc()
         return jsonify({"message": f"Erro Interno: {str(e)}"}), 500
 
 # ========== REMOVER PRODUTO ==========
@@ -229,6 +239,7 @@ def remove_product(product_id):
 
     except Exception as e:
         print(f"Erro ao remover produto: {e}")
+        traceback.print_exc()
         return jsonify({"message": f"Erro interno: {str(e)}"}), 500
 
 # ================== MAIN ======================
