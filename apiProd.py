@@ -33,7 +33,7 @@ cookie_value = "wekdoWKGFKGK1234553"
 
 app.config.update( 
     SESSION_COOKIE_SAMESITE='None',
-    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SECURE=False, # temporario True(correto)
     SESSION_COOKIE_DOMAIN=None  
 )
 
@@ -82,11 +82,16 @@ def api_server():
 
             cursor.execute('SELECT * FROM usuario WHERE nome_user = %s', (nome,))
             usuario = cursor.fetchone()
+            if not usuario:
+                cursor.close()
+                conn.close()
+                return jsonify({"message": "Usuário não encontrado"}), 404
+
 
             if usuario:
                 if verify_password(usuario[2], senha):
 
-                    session[cookie_value] = usuario[1]
+                    session["usuario"] = usuario[1]
                     session['token'] = cookie_value
                     session.permanent = True
                     conn.close()  
@@ -109,7 +114,7 @@ def api_server():
 #checa se o cookie usuario existe 
 @app.route('/api/check_session/', methods=['GET'])
 def check_session():
-        if cookie_value in session:
+        if "usuario" in session:
             return jsonify({"authenticated": True, "usuario": session["usuario"]}), 200
         else:
             return jsonify({"authenticated": False}), 401
