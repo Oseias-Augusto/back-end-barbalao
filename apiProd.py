@@ -33,7 +33,7 @@ cookie_value = "wekdoWKGFKGK1234553"
 
 app.config.update( 
     SESSION_COOKIE_SAMESITE='None',
-    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_SECURE=False,
     SESSION_COOKIE_DOMAIN=None  
 )
 
@@ -87,6 +87,7 @@ def api_server():
                 if verify_password(usuario[2], senha):
 
                     session[cookie_value] = usuario[1]
+                    session["user"] = usuario[1]
                     session['token'] = cookie_value
                     session.permanent = True
                     conn.close()  
