@@ -102,7 +102,6 @@ def api_server():
             conn.close()
         except:
             pass
-1
 
 
 # Cria Prod.
