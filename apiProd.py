@@ -64,52 +64,42 @@ def init():
 #login
 @app.route('/api/login/', methods=['POST'])
 def api_server():
-        if request.method == 'OPTIONS':
-            return jsonify({"message": "CORS preflight OK"}), 200
-        data = request.get_json()
-        try:
+    data = request.get_json()
+    if not data:
+        return jsonify({"message": "JSON inválido ou ausente"}), 400
 
-            if data == None:
-                return jsonify({
-                "message": "JSON inválido ou ausente na requisição"
-            }), 400
+    nome = data.get('nome_user')
+    senha = data.get('hash')
 
-            nome = data.get('nome_user')
-            senha = data.get('hash')
+    try:
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM usuario WHERE nome_user = %s', (nome,))
+        usuario = cursor.fetchone()
 
-            conn = get_conn()
-            cursor = conn.cursor()
+        if not usuario:
+            return jsonify({"message": "Usuário não encontrado"}), 404
 
-            cursor.execute('SELECT * FROM usuario WHERE nome_user = %s', (nome,))
-            usuario = cursor.fetchone()
+        # verifique a ordem correta da função verify_password
+        if verify_password(senha, usuario[2]):
+            session["usuario"] = usuario[1]
+            session["token"] = cookie_value
+            session.permanent = True
+            return jsonify({"message": "OK"}), 200
+        else:
+            return jsonify({"message": "Usuário ou senha incorretos"}), 401
 
-            if usuario:
-                if verify_password(usuario[2], senha):
-
-                    session[cookie_value] = usuario[1]
-                    session['token'] = cookie_value
-                    session.permanent = True
-                    conn.close()  
-                    cursor.close()
-                    return jsonify({"message": "OK"}), 200
-                
-                else:
-                    
-                    cursor.close()  
-                    conn.close()  
-                    return jsonify({"message": "Usuário ou senha incorretos"}), 401
-  
-        except TypeError as e:
-             print(f"Erro usuário não encontrado: {e}")
-             cursor.close()
-             conn.close()    
-        return jsonify({"message": "Erro no servidor, tente mais tarde", "status": 500})
-
+    except Exception as e:
+        print(f"Erro no login: {e}")
+        return jsonify({"message": "Erro no servidor"}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
 #checa se o cookie usuario existe 
 @app.route('/api/check_session/', methods=['GET'])
 def check_session():
-        if cookie_value in session:
+        if "usuario" in session:
             return jsonify({"authenticated": True, "usuario": session["usuario"]}), 200
         else:
             return jsonify({"authenticated": False}), 401
