@@ -12,12 +12,12 @@ while True:
         )
         cursor = conn.cursor()
 
-        cursor.execute("DROP TABLE IF EXISTS categoria CASCADE;")
-        cursor.execute("DROP TABLE IF EXISTS products CASCADE")
-        cursor.execute("DROP TABLE IF EXISTS usuario CASCADE")
-        cursor.execute("DROP TABLE IF EXISTS ")
-        cursor.execute("DROP TABLE IF EXISTS ")
-        cursor.execute("DROP TABLE IF EXISTS ")
+        # cursor.execute("DROP TABLE IF EXISTS categoria CASCADE;")
+        # cursor.execute("DROP TABLE IF EXISTS produto CASCADE")
+        # cursor.execute("DROP TABLE IF EXISTS usuario CASCADE")
+        # cursor.execute("DROP TABLE IF EXISTS adicionais CASCADE")
+        # cursor.execute("DROP TABLE IF EXISTS categoria_has_adicionais CASCADE")
+        # cursor.execute("DROP TABLE IF EXISTS banners CASCADE")
         conn.commit()
 
 
