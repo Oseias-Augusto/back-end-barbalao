@@ -33,7 +33,7 @@ cookie_value = "wekdoWKGFKGK1234553"
 
 app.config.update( 
     SESSION_COOKIE_SAMESITE='None',
-    SESSION_COOKIE_SECURE=False, # temporario True(correto)
+    SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_DOMAIN=None  
 )
 
@@ -61,63 +61,48 @@ def init():
                                         <h1>Hello World!</h1>
                                   """)
 
-#login
 @app.route('/api/login/', methods=['POST'])
 def api_server():
-        if request.method == 'OPTIONS':
-            return jsonify({"message": "CORS preflight OK"}), 200
-        data = request.get_json()
-        try:
+    if request.method == 'OPTIONS':
+        return jsonify({"message": "CORS preflight OK"}), 200
 
-            if data == None:
-                return jsonify({
-                "message": "JSON inválido ou ausente na requisição"
-            }), 400
+    data = request.get_json()
+    if not data:
+        return jsonify({"message": "JSON inválido ou ausente na requisição"}), 400
 
-            nome = data.get('nome_user')
-            senha = data.get('hash')
+    nome = data.get('nome_user')
+    senha = data.get('hash')
 
-            conn = get_conn()
-            cursor = conn.cursor()
+    try:
+        conn = get_conn()
+        cursor = conn.cursor()
 
-            cursor.execute('SELECT * FROM usuario WHERE nome_user = %s', (nome,))
-            usuario = cursor.fetchone()
-            if not usuario:
-                cursor.close()
-                conn.close()
-                return jsonify({"message": "Usuário não encontrado"}), 404
+        cursor.execute('SELECT * FROM usuario WHERE nome_user = %s', (nome,))
+        usuario = cursor.fetchone()
 
+        if not usuario:
+            return jsonify({"message": "Usuário não encontrado"}), 401
 
-            if usuario:
-                if verify_password(usuario[2], senha):
-
-                    session["usuario"] = usuario[1]
-                    session['token'] = cookie_value
-                    session.permanent = True
-                    conn.close()  
-                    cursor.close()
-                    return jsonify({"message": "OK"}), 200
-                
-                else:
-                    
-                    cursor.close()  
-                    conn.close()  
-                    return jsonify({"message": "Usuário ou senha incorretos"}), 401
-  
-        except TypeError as e:
-             print(f"Erro usuário não encontrado: {e}")
-             cursor.close()
-             conn.close()    
-        return jsonify({"message": "Erro no servidor, tente mais tarde", "status": 500})
-
-
-#checa se o cookie usuario existe 
-@app.route('/api/check_session/', methods=['GET'])
-def check_session():
-        if "usuario" in session:
-            return jsonify({"authenticated": True, "usuario": session["usuario"]}), 200
+        if verify_password(usuario[2], senha):
+            session['usuario'] = usuario[1]
+            session['token'] = cookie_value
+            session.permanent = True
+            conn.close()
+            return jsonify({"message": "OK"}), 200
         else:
-            return jsonify({"authenticated": False}), 401
+            return jsonify({"message": "Usuário ou senha incorretos"}), 401
+
+    except Exception as e:
+        print(f"Erro no login: {e}")
+        return jsonify({"message": "Erro no servidor", "status": 500}), 500
+
+    finally:
+        try:
+            cursor.close()
+            conn.close()
+        except:
+            pass
+1
 
 
 # Cria Prod.
