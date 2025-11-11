@@ -172,6 +172,7 @@ def create_categ():
                 '''
                     INSERT INTO categoria (nome_categ, imagm_categ, usuario_id_user)
                     VALUES(%s, %s, %s)
+                    RETURNING id_categoria
                 ''',(nome, imagem, usuario)
             )
         else:
@@ -179,6 +180,7 @@ def create_categ():
                 '''
                     INSERT INTO categoria (nome_categ, imagm_categ, usuario_id_user, categoria_id_categoria)
                     VALUES(%s, %s, %s, %s)
+                    RETURNING id_categoria
                 ''',(nome, imagem, usuario, categoria)
             )
 
@@ -224,6 +226,7 @@ def create_banner():
             '''
                 INSERT INTO banners (titulo_banner, sub_titulo_banner, imagem_banner, usuario_id_user)
                 VALUES(%s, %s, %s, %s)
+                RETURNING id_categoria
             ''', (titulo, sub_titulo, imagem, usuario)
         )
 
