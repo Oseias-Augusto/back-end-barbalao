@@ -356,7 +356,7 @@ def list_banner():
 
         conn.close()
 
-        categories = [
+        banners = [
             {
                 'id_banner': row[0],
                 'titulo': row[1],
