@@ -226,7 +226,7 @@ def create_banner():
             '''
                 INSERT INTO banners (titulo_banner, sub_titulo_banner, imagem_banner, usuario_id_user)
                 VALUES(%s, %s, %s, %s)
-                RETURNING id_categoria
+                RETURNING id_banner
             ''', (titulo, sub_titulo, imagem, usuario)
         )
 
@@ -287,11 +287,13 @@ def list_categ():
         conn = get_conn()
         cursor = conn.cursor()
         cursor.execute('''
-            SELECT sub.id_categoria, sub.nome_categ, sub.usuario_id_user, 
-                   sub.categoria_id_categoria,
-                   categ.nome_categ as nome_categoria_pai
-            FROM categoria sub 
-            LEFT JOIN categoria categ ON sub.categoria_id_categoria = categ.id_categoria
+            SELECT 
+                id_categoria, 
+                nome_categ, 
+                imagm_categ,
+                usuario_id_user,
+                categoria_id_categoria
+            FROM categoria 
             WHERE categoria_id_categoria IS NOT NULL;
         ''')
         rows = cursor.fetchall()
