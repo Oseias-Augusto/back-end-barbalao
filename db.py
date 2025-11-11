@@ -62,7 +62,7 @@ while True:
                     descricao_prod          TEXT    NOT NULL,
                     imagem_prod             TEXT    NOT NULL,
                     categoria_id_categoria  INT     NOT NULL,
-                    usuario_id_user        INT,
+                    usuario_id_user         INT,
 
 
                     FOREIGN KEY(categoria_id_categoria) REFERENCES categoria(id_categoria),
