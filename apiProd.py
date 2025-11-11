@@ -249,7 +249,7 @@ def list_products():
         cursor = conn.cursor()
         cursor.execute('''
             SELECT id_prod, nome_prod, preco_prod, 
-                   descricao_prod, imagem_prod 
+                   descricao_prod, imagem_prod, categoria_id_categoria 
             FROM produto;''')
         rows = cursor.fetchall()
 
@@ -261,7 +261,8 @@ def list_products():
                 'nome': row[1],
                 'preco': float(row[2]),
                 'descricao': row[3],
-                'imagem': row[4]
+                'imagem': row[4],
+                'categoria': row[5]
             } for row in rows
         ]
 
