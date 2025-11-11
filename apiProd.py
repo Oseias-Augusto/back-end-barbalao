@@ -82,16 +82,16 @@ def api_server():
 
 @app.route('/api/check_session/', methods=['GET'])
 def check_session():
-    # 🔑 CORREÇÃO: Verificação correta da sessão
     if 'user' in session:
         return jsonify({
-            "authenticated": True, 
-            "user": session['user']
+            "authenticated": True, "user": session['user']
         }), 200
     else:
         return jsonify({"authenticated": False}), 401
 
-# Cria Prod.
+# CREATE ('C'RUD) -------------------------------------------------------------------------------------------------------------------
+
+#PROD ---------------------------------------
 @app.route('/api/products/', methods=['POST'])
 def create_product():
     try:
@@ -102,11 +102,12 @@ def create_product():
             print("JSON ausente ou inválido")
             return jsonify({"message": "JSON inválido ou ausente"}), 400
         
-        nome = data.get('nome_prod')
-        preco = data.get('preco_prod')
-        descricao = data.get('descricao_prod')
-        imagem = data.get('imagem_prod')
-        # categ_id = data.get('categ_id')
+        nome = data.get('nome')
+        preco = data.get('preco')
+        descricao = data.get('descricao')
+        imagem = data.get('imagem')
+        categoria = data.get('categoria')
+        usuario = data.get('usuario')
 
         print(f"Nome: {nome}, Preço: {preco}, Imagem: {type(imagem)}")
 
@@ -119,10 +120,10 @@ def create_product():
 
         cursor.execute(
             '''
-             INSERT INTO produto(nome_prod, preco_prod, descricao_prod, imagem_prod)
-             VALUES (%s, %s, %s, %s)
+             INSERT INTO produto(nome_prod, preco_prod, descricao_prod, imagem_prod, categoria_id_categoria, usuario_id_user)
+             VALUES (%s, %s, %s, %s, %s, %s)
              RETURNING id_prod
-            ''', (nome, float(preco), descricao, imagem)
+            ''', (nome, float(preco), descricao, imagem, categoria, usuario)
         )
         
         conn.commit()
@@ -136,15 +137,120 @@ def create_product():
     except Exception as e:
         print(f"Erro ao criar produto: {e}")
         return jsonify({"message": f"Erro interno: {str(e)}"}), 500
+    
+
+#CATEG -------------------------------------------------------
+@app.route('/api/categoria/', methods = ['POST'])
+def create_categ():
+    try:
+        data = request.get_json()
+        print(f"Dados recebidos: {data}")
+
+        if data is None:
+            print("JSON ausente ou inválido")
+            return jsonify({"message": "JSON inválido ou ausente"}), 400
+        
+        nome = data.get('nome')
+        imagem = data.get('imagem')
+        usuario = data.get('usuario')
+        categoria = data.get('sub')
+
+        print(f"Nome: {nome}, Imagem: {imagem}, usuario: {usuario}, categoria: {categoria}")
+
+        if nome is None or imagem is None:
+            print("Campos obrigatórios ausentes")
+            return jsonify({"message": "Campos obrigatórios: nome e imagem"}), 400
+
+        conn = get_conn()
+        cursor = conn.cursor()
+
+        if categoria is None:
+            cursor.execute(
+                '''
+                    INSERT INTO categoria (nome_categ, imagm_categ, usuario_id_user)
+                    VALUES(%s, %s, %s)
+                ''',(nome, imagem, usuario)
+            )
+        else:
+            cursor.execute(
+                '''
+                    INSERT INTO categoria (nome_categ, imagm_categ, usuario_id_user, categoria_id_categoria)
+                    VALUES(%s, %s, %s, %s)
+                ''',(nome, imagem, usuario, categoria)
+            )
+
+        conn.commit()
+        new_id = cursor.fetchone()[0]
+        print("Categoria criada com ID:", new_id)
+
+        conn.close()
+        
+        return jsonify({"message": "Categoria Criada", "ID" : new_id}), 201
+
+    
+    except Exception as e:
+        print(f"Erro ao criar categoria: {e}")
+        return jsonify({"message": f"Erro interno: {str(e)}"}), 500
+
+#BANNER ------------------------------------------------------
+@app.route('api/banner/', methods = ['POST'])
+def create_banner():
+    try:
+        data = request.get_json()
+        print(f"Dados recebidos: {data}")
+
+        if data is None:
+            print("JSON ausente ou inválido")
+            return jsonify({"message": "JSON inválido ou ausente"}), 400
+    
+        titulo = data.get('titulo')
+        sub_titulo = data.get('sub_titulo')
+        imagem = data.get('imagem')
+        usuario = data.get('usuario')
+
+        print(f"titulo: {titulo}, sub_titulo: {sub_titulo}, imagem: {imagem}, usuario: {usuario}")
+
+        if titulo is None or imagem is None:
+            print('Campos obrigatorios ausentes')
+            return jsonify({"message": "Campos obrigatorios: titulo e imagem"}), 400
+        
+        conn = get_conn()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            '''
+                INSERT INTO banners (titulo_banner, sub_titulo_banner, imagem_banner, usuario_id_user)
+                VALUES(%s, %s, %s, %s)
+            ''', (titulo, sub_titulo, imagem, usuario)
+        )
+
+        conn.commit()
+
+        new_id = cursor.fetchone()[0]
+        print("Banner criado com ID:", new_id)
+
+        conn.close()
+        
+        return jsonify({"message": "Banner Criada", "ID" : new_id}), 201
+
+    except Exception as e:
+        print(f"Erro ao criar categoria: {e}")
+        return jsonify({"message": f"Erro interno: {str(e)}"}), 500
 
 
-# Pega Prod.
+
+# REED (C'R'UD) --------------------------------------------------------------------------------------------------------------------
+
+#PRODUTO -----------------------------------
 @app.route('/api/products/', methods=['GET'])
 def list_products():
     try:
         conn = get_conn()
         cursor = conn.cursor()
-        cursor.execute('''SELECT id_prod, nome_prod, preco_prod, descricao_prod, imagem_prod FROM produto;''')
+        cursor.execute('''
+            SELECT id_prod, nome_prod, preco_prod, 
+                   descricao_prod, imagem_prod 
+            FROM produto;''')
         rows = cursor.fetchall()
 
         conn.close()
@@ -152,10 +258,10 @@ def list_products():
         products = [
             {
                 'id_prod': row[0],
-                'nome_prod': row[1],
-                'preco_prod': float(row[2]),
-                'descricao_prod': row[3],
-                'imagem_prod': row[4]
+                'nome': row[1],
+                'preco': float(row[2]),
+                'descricao': row[3],
+                'imagem': row[4]
             } for row in rows
         ]
 
@@ -164,6 +270,103 @@ def list_products():
     except Exception as e:
         print(f"Erro ao criar produto: {e}")
         return jsonify({"message": "Erro Interno"}), 500
+    
+#CATEGORIA ----------------------------------------------
+
+# Pega subcategorias
+@app.route('/api/categoria/', methods = ['GET'])
+def list_categ():
+    try:
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT sub.id_categoria, sub.nome_categ, sub.usuario_id_user, 
+                   sub.categoria_id_categoria,
+                   categ.nome_categ as nome_categoria_pai
+            FROM categoria sub 
+            LEFT JOIN categoria categ ON sub.categoria_id_categoria = categ.id_categoria;
+        ''')
+        rows = cursor.fetchall()
+
+        conn.close()
+
+        categories = [
+            {
+                'id_categoria': row[0],
+                'nome': row[1],
+                'usuario': row[2],
+                'sub_categoria_de': row[3],
+                'nome_categoria_pai': row[4]
+            } for row in rows
+        ]
+
+        return jsonify(categories), 200
+    
+    except Exception as e:
+        print(f"Erro ao listar categorias: {e}")
+        return jsonify({"message": "Erro Interno"}), 500
+
+# So as cetegorias pai
+@app.route('/api/categoria/principais/', methods = ['GET'])
+def list_categ_principais():
+    try:
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT id_categoria, nome_categ, imagm_categ, usuario_id_user
+            FROM categoria 
+            WHERE categoria_id_categoria IS NULL;
+        ''')
+        rows = cursor.fetchall()
+
+        conn.close()
+
+        categories = [
+            {
+                'id_categoria': row[0],
+                'nome': row[1],
+                'imagem': row[2],
+                'usuario': row[3]
+            } for row in rows
+        ]
+
+        return jsonify(categories), 200
+    
+    except Exception as e:
+        print(f"Erro ao listar categorias principais: {e}")
+        return jsonify({"message": "Erro Interno"}), 500
+
+#BANNER ---------------------------------------------------
+@app.route('/api/banner/', method=['GET'])
+def list_banner():
+    try:
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT id_banner, titulo_banner, 
+                   sub_titulo_banner, imagem_banner, 
+                   usuario_id_user 
+            FROM banners;''')
+        rows = cursor.fetchall()
+
+        conn.close()
+
+        categories = [
+            {
+                'id_banner': row[0],
+                'titulo': row[1],
+                'sub_titulo': row[2],
+                'imagem': row[3],
+                'usuario': row[4]
+            } for row in rows
+        ]
+
+        return jsonify(categories), 200
+    
+    except Exception as e:
+        print(f"Erro ao criar categoria: {e}")
+        return jsonify({"message": "Erro Interno"}), 500
+
 
 # Atualizar Prod.
 @app.route('/api/products/atualizar/<int:product_id>/', methods=['POST'])
@@ -218,4 +421,3 @@ def remove_product(product_id):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-
