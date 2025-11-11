@@ -285,7 +285,8 @@ def list_categ():
                    sub.categoria_id_categoria,
                    categ.nome_categ as nome_categoria_pai
             FROM categoria sub 
-            LEFT JOIN categoria categ ON sub.categoria_id_categoria = categ.id_categoria;
+            LEFT JOIN categoria categ ON sub.categoria_id_categoria = categ.id_categoria
+            WHERE categoria_id_categoria IS NOT NULL;
         ''')
         rows = cursor.fetchall()
 
