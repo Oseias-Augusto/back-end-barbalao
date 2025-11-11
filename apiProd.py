@@ -60,10 +60,12 @@ def api_server():
 
         cursor.execute('SELECT * FROM usuario WHERE nome_user = %s', (nome,))
         usuario = cursor.fetchone()
+        new_id = usuario[0]
 
         if usuario and verify_password(usuario[2], senha):
             
             session['user'] = usuario[1]
+            session['id'] = new_id
             session.permanent = True
             
             response = jsonify({"message": "OK", "user": usuario[1]})
@@ -79,12 +81,13 @@ def api_server():
     except Exception as e:
         print(f"Erro no login: {e}")
         return jsonify({"message": "Erro no servidor, tente mais tarde"}), 500
+    
 
 @app.route('/api/check_session/', methods=['GET'])
 def check_session():
     if 'user' in session:
         return jsonify({
-            "authenticated": True, "user": session['user']
+            "authenticated": True, "user": session['user'], "id": session['id']
         }), 200
     else:
         return jsonify({"authenticated": False}), 401
