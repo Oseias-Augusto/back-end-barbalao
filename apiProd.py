@@ -19,7 +19,7 @@ CORS(app,
         "https://dark-sorcery-q76pqgjx9r6q2xqrj-5173.app.github.dev",
         "https://dark-sorcery-q76pqgjx9r6q2xqrj-5174.app.github.dev"
      ],
-     supports_credentials=True,  # 🔑 IMPORTANTE
+     supports_credentials=True,
      allow_headers=["Content-Type", "Authorization"]
 )
 
@@ -62,7 +62,7 @@ def api_server():
         usuario = cursor.fetchone()
 
         if usuario and verify_password(usuario[2], senha):
-            # 🔑 CORREÇÃO: Configuração correta da sessão
+            
             session['user'] = usuario[1]
             session.permanent = True
             
