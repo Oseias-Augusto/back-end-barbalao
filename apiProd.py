@@ -339,7 +339,7 @@ def list_categ_principais():
         return jsonify({"message": "Erro Interno"}), 500
 
 #BANNER ---------------------------------------------------
-@app.route('/api/banner/', method=['GET'])
+@app.route('/api/banner/', methods=['GET'])
 def list_banner():
     try:
         conn = get_conn()
