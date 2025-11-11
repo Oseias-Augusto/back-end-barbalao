@@ -193,7 +193,7 @@ def create_categ():
         return jsonify({"message": f"Erro interno: {str(e)}"}), 500
 
 #BANNER ------------------------------------------------------
-@app.route('api/banner/', methods = ['POST'])
+@app.route('/api/banner/', methods = ['POST'])
 def create_banner():
     try:
         data = request.get_json()
