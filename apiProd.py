@@ -366,7 +366,7 @@ def list_banner():
             } for row in rows
         ]
 
-        return jsonify(categories), 200
+        return jsonify(banners), 200
     
     except Exception as e:
         print(f"Erro ao criar categoria: {e}")
