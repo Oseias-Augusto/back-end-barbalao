@@ -289,8 +289,7 @@ def list_categ():
         cursor.execute('''
             SELECT 
                 id_categoria, 
-                nome_categ, 
-                imagm_categ,
+                nome_categ,
                 usuario_id_user,
                 categoria_id_categoria
             FROM categoria 
