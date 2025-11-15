@@ -100,13 +100,14 @@ while True:
         cursor.execute(
             '''
                 CREATE TABLE IF NOT EXISTS banners (
-                    id_banner           SERIAL  PRIMARY KEY,
-                    titulo_banner       TEXT    NOT NULL,
-                    sub_titulo_banner   TEXT,
-                    imagem_banner       TEXT    NOT NULL,
-                    usuario_id_user     INT,
+                    id_banner               SERIAL  PRIMARY KEY,
+                    titulo_banner           TEXT    NOT NULL,
+                    sub_titulo_banner       TEXT,
+                    imagem_banner           TEXT    NOT NULL,
+                    usuario_id_user         INT,
 
-                    FOREIGN KEY(usuario_id_user) REFERENCES usuario(id_user)
+                    FOREIGN KEY(usuario_id_user) REFERENCES usuario(id_user),
+                    FOREIGN KEY(categoria_id_categoria) REFERENCES categoria(id_categoria)
                 )
             '''
         )

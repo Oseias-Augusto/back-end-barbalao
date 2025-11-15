@@ -377,55 +377,92 @@ def list_banner():
         return jsonify({"message": "Erro Interno"}), 500
 
 
-# Atualizar Prod.
-@app.route('/api/products/atualizar/<int:product_id>/', methods=['POST'])
-def update_products(product_id, product_name = None, product_image = None, product_price = None):
+# UPDATE (CR'U'D) - Função Genérica -----------------------------------------------------------------
+
+def update(id_value, table, id_column, update_data):
     try:
         conn = get_conn()
         cursor = conn.cursor()
-        if product_name:
-            cursor.execute('UPDATE produto SET nome_prod = %s WHERE id_prod = %s;', (product_name, product_id))
-        if product_image:
-            cursor.execute('UPDATE produto SET imagem_prod = %s WHERE id_prod = %s;', (product_image, product_id))
-        if product_price:
-            cursor.execute('UPDATE produto SET preco_prod = %s WHERE id_prod = %s;', (product_image, product_id))
 
-        conn.commit()
-        cursor.close()
-
-        if cursor.rowcount == 0:
-            return jsonify({"message": "Produto não encontrado"}), 404
+        set_clause = ", ".join([f"{key} = %s" for key in update_data.keys()])
+        values = list(update_data.values())
+        values.append(id_value)
         
-        return jsonify({"message": "Produto editado com sucesso"}), 200
-
-    except Exception as e:
-        print(f"Erro ao atualizar produto: {e}")
-        return jsonify({"message": "Erro Interno"}), 500
-
-# Apaga Prod.
-@app.route('/api/products/remove/<int:product_id>/', methods=['DELETE'])
-def remove_product(product_id):
-
-    try:
-        conn = get_conn()
-        cursor = conn.cursor()
-        cursor.execute('DELETE FROM produto WHERE id_prod = %s', (product_id,))
-        conn.commit()
+        query = f"UPDATE {table} SET {set_clause} WHERE {id_column} = %s"
+        cursor.execute(query, values)
         
+        conn.commit()
 
         if cursor.rowcount == 0:
             cursor.close()
             conn.close()
-            return jsonify({"message": "Produto não encontrado"}), 404
+            return jsonify({"message": f"{table} não encontrado"}), 404
+        
+        cursor.close()
+        conn.close()
+        return jsonify({"message": f"{table} atualizado com sucesso"}), 200
+    
+    except Exception as e:
+        print(f"Erro ao atualizar {table}: {e}")
+        return jsonify({"message": f"Erro interno: {str(e)}"}), 500
 
+# Rotas específicas usando a função genérica:
+
+# Atualiza Produto
+@app.route('/api/products/atualizar/<int:product_id>/', methods=['POST'])
+def update_product(product_id):
+    data = request.get_json()
+    return update(product_id, "produto", "id_prod", data)
+
+# Atualiza Banner
+@app.route('/api/banners/atualizar/<int:banner_id>/', methods=['POST'])
+def update_banner(banner_id):
+    data = request.get_json()
+    return update(banner_id, "banners", "id_banner", data)
+
+# Atualiza Categoria
+@app.route('/api/categorias/atualizar/<int:categoria_id>/', methods=['POST'])
+def update_categoria(categoria_id):
+    data = request.get_json()
+    return update(categoria_id, "categoria", "id_categoria", data)
+
+
+# DELETE (C. R. U. ' D. ')
+
+def remove(id, table, idEspecifico):
+    try:
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute(f'DELETE FROM {table} WHERE {idEspecifico} = %s', (id,))
+        conn.commit()
+
+        if cursor.rowcount == 0:
+            cursor.close()
+            conn.close()
+            return jsonify({"message": f"{table} não encontrado"}), 404
+        
         cursor.close()
         conn.close()
 
-        return jsonify({"message": "Produto removido com sucesso"}), 200
-
+        return jsonify({"message": f"{table} id {idEspecifico} removido com sucesso"}), 200
+    
     except Exception as e:
-        print(f"Erro ao remover produto: {e}")
-        return jsonify({"message": "Erro interno"}), 500       
+        print(f"Erro ao remover {table}: {e}")
+
+# Apaga Prod
+@app.route('/api/products/remove/<int:product_id>/', methods=['DELETE'])
+def remove_product(product_id):
+    return remove(product_id, "produto", "id_prod")
+
+# Apaga Banner
+@app.route('/api/banners/remove/<int:id_banner>/', methods=['DELETE'])
+def remove_banner(banner_id):
+    return remove(banner_id, "banners", "id_banner")
+
+# Apaga Categoria
+@app.route('/api/categorias/remove/<int: id_categoria>', method=['DELETE'])
+def remove_categoria(id_categoria):
+    return remove(id_categoria, "categoria", "id_categoria")
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
