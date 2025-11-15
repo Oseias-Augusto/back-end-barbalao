@@ -87,7 +87,7 @@ def api_server():
 def check_session():
     if 'user' in session:
         return jsonify({
-            "authenticated": True, "user": session['user'], "id": session['id']
+            "authenticated": True #não tem porque mandar o user e o id pro front toda vez que a página reiniciar
         }), 200
     else:
         return jsonify({"authenticated": False}), 401
