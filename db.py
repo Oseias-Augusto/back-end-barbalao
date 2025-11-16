@@ -105,6 +105,7 @@ while True:
                     sub_titulo_banner       TEXT,
                     imagem_banner           TEXT    NOT NULL,
                     usuario_id_user         INT,
+                    categoria_id_categoria  INT,
 
                     FOREIGN KEY(usuario_id_user) REFERENCES usuario(id_user),
                     FOREIGN KEY(categoria_id_categoria) REFERENCES categoria(id_categoria)
