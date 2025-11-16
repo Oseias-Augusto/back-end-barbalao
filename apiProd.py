@@ -17,7 +17,8 @@ CORS(app,
         "https://barbalao.vercel.app",
         "https://supreme-carnival-x5xvwq7494qxh6r7j-5173.app.github.dev",
         "https://dark-sorcery-q76pqgjx9r6q2xqrj-5173.app.github.dev",
-        "https://dark-sorcery-q76pqgjx9r6q2xqrj-5174.app.github.dev"
+        "https://dark-sorcery-q76pqgjx9r6q2xqrj-5174.app.github.dev",
+        "https://fantastic-memory-wr9xwxpqx4wvf95jv.github.dev"
      ],
      supports_credentials=True,
      allow_headers=["Content-Type", "Authorization"]
