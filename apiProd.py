@@ -498,7 +498,7 @@ class App:
         self.app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
         self.app.config.update(
             SESSION_COOKIE_HTTPONLY=True,
-            SESSION_COOKIE_SECURE=True,  # Mudar para True em produção
+            SESSION_COOKIE_SECURE=True,
             SESSION_COOKIE_SAMESITE='None',
         )
         CORS(self.app,
