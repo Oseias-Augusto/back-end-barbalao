@@ -201,7 +201,7 @@ class CategoryController:
         self.bp.route('/', methods=['GET'])(self.list_categ)
         self.bp.route('/principais/', methods=['GET'])(self.list_categ_principais)
         self.bp.route('/atualizar/<int:categoria_id>/', methods=['POST'])(self.update_categoria)
-        self.bp.route('/remove/<int:categoria_id>/', methods=['DELETE', 'OPTIONS'])(self.remove_categoria)
+        self.bp.route('/remove/<int:categoria_id>/', methods=['DELETE'])(self.remove_categoria)
 
     def create_categ(self):
         data = request.get_json()
@@ -315,48 +315,51 @@ class CategoryController:
             conn = self.db.get_conn()
             cursor = conn.cursor()
 
-            # Verificar se a categoria existe
-            cursor.execute('SELECT id_categoria FROM categoria WHERE id_categoria = %s', (categoria_id,))
-            if cursor.fetchone() is None:
+            cursor.execute('SELECT categoria_id_categoria FROM categoria WHERE id_categoria = %s', (categoria_id,))
+            result = cursor.fetchone()
+            
+            if result is None:
                 cursor.close()
                 conn.close()
                 return jsonify({"message": "Categoria não encontrada"}), 404
 
-            # Verificar dependências de forma mais simples
-            cursor.execute('SELECT COUNT(*) FROM produto WHERE categoria_id_categoria = %s', (categoria_id,))
-            count_produtos = cursor.fetchone()[0]
+            categoria_pai_id = result[0]
 
-            cursor.execute('SELECT COUNT(*) FROM categoria WHERE categoria_id_categoria = %s', (categoria_id,))
-            count_subcategorias = cursor.fetchone()[0]
+            if categoria_pai_id is None:
 
-            if count_produtos > 0 or count_subcategorias > 0:
-                cursor.close()
-                conn.close()
-                return jsonify({
-                    "message": "Não é possível excluir a categoria pois existem produtos ou subcategorias associadas",
-                    "produtos_associados": count_produtos,
-                    "subcategorias_associadas": count_subcategorias
-                }), 400
+                cursor.execute('SELECT COUNT(*) FROM produto WHERE categoria_id_categoria = %s', (categoria_id,))
+                count_produtos = cursor.fetchone()[0]
 
-            # Se não há dependências, excluir
-            cursor.execute('DELETE FROM categoria WHERE id_categoria = %s', (categoria_id,))
-            conn.commit()
+                cursor.execute('SELECT COUNT(*) FROM categoria WHERE categoria_id_categoria = %s', (categoria_id,))
+                count_subcategorias = cursor.fetchone()[0]
 
-            if cursor.rowcount == 0:
-                cursor.close()
-                conn.close()
-                return jsonify({"message": "Falha ao excluir categoria"}), 500
+                if count_produtos > 0:
+                    cursor.close()
+                    conn.close()
+                    return jsonify({"message": "Não é possível excluir a categoria pois existem produtos associados a ela"}), 400
 
+                if count_subcategorias > 0:
+                    cursor.close()
+                    conn.close()
+                    return jsonify({"message": "Não é possível excluir a categoria pois existem subcategorias associadas a ela"}), 400
+            else:
+
+                cursor.execute('SELECT COUNT(*) FROM produto WHERE categoria_id_categoria = %s', (categoria_id,))
+                count_produtos = cursor.fetchone()[0]
+
+                if count_produtos > 0:
+                    cursor.close()
+                    conn.close()
+                    return jsonify({"message": "Não é possível excluir a subcategoria pois existem produtos associados a ela"}), 400
+            
             cursor.close()
             conn.close()
-            return jsonify({"message": "Categoria removida com sucesso"}), 200
+            return self._remove(categoria_id, "categoria", "id_categoria")
 
         except Exception as e:
             print(f"Erro ao remover categoria: {e}")
-            if conn:
-                conn.rollback()
             return jsonify({"message": f"Erro interno: {str(e)}"}), 500
-    
+
     def _update(self, id_value, table, id_column, update_data):
         try:
             conn = self.db.get_conn()
