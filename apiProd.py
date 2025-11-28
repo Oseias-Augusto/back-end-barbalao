@@ -201,7 +201,7 @@ class CategoryController:
         self.bp.route('/', methods=['GET'])(self.list_categ)
         self.bp.route('/principais/', methods=['GET'])(self.list_categ_principais)
         self.bp.route('/atualizar/<int:categoria_id>/', methods=['POST'])(self.update_categoria)
-        self.bp.route('/remove/<int:categoria_id>/', methods=['DELETE'])(self.remove_categoria)
+        self.bp.route('/remove/<int:categoria_id>/', methods=['DELETE', 'OPTIONS'])(self.remove_categoria)
 
     def create_categ(self):
         data = request.get_json()
