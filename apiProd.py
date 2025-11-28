@@ -201,7 +201,7 @@ class CategoryController:
         self.bp.route('/', methods=['GET'])(self.list_categ)
         self.bp.route('/principais/', methods=['GET'])(self.list_categ_principais)
         self.bp.route('/atualizar/<int:categoria_id>/', methods=['POST'])(self.update_categoria)
-        self.bp.route('/remove/<int:categoria_id>/', methods=['DELETE'])(self.remove_categoria)
+        self.bp.route('/remove/<int:categoria_id>/', methods=['DELETE', 'OPTIONS'])(self.remove_categoria)
 
     def create_categ(self):
         data = request.get_json()
@@ -311,25 +311,49 @@ class CategoryController:
         return self._update(categoria_id, "categoria", "id_categoria", data)
 
     def remove_categoria(self, categoria_id):
+        if request.method == 'OPTIONS':
+            return jsonify({"message": "OK"}), 200
+        
         try:
             conn = self.db.get_conn()
             cursor = conn.cursor()
 
-            cursor.execute('SELECT COUNT(*) FROM produto WHERE categoria_id_categoria = %s', (categoria_id,))
-            count_produtos = cursor.fetchone()[0]
-
-            cursor.execute('SELECT COUNT(*) FROM categoria WHERE categoria_id_categoria = %s', (categoria_id,))
-            count_subcategorias = cursor.fetchone()[0]
-
-            if count_produtos > 0:
+            cursor.execute('SELECT categoria_id_categoria FROM categoria WHERE id_categoria = %s', (categoria_id,))
+            result = cursor.fetchone()
+            
+            if result is None:
                 cursor.close()
                 conn.close()
-                return jsonify({"message": "Não é possível excluir a categoria pois existem produtos associados a ela"}), 400
+                return jsonify({"message": "Categoria não encontrada"}), 404
 
-            if count_subcategorias > 0:
-                cursor.close()
-                conn.close()
-                return jsonify({"message": "Não é possível excluir a categoria pois existem subcategorias associadas a ela"}), 400
+            categoria_pai_id = result[0]
+
+            if categoria_pai_id is None:
+
+                cursor.execute('SELECT COUNT(*) FROM produto WHERE categoria_id_categoria = %s', (categoria_id,))
+                count_produtos = cursor.fetchone()[0]
+
+                cursor.execute('SELECT COUNT(*) FROM categoria WHERE categoria_id_categoria = %s', (categoria_id,))
+                count_subcategorias = cursor.fetchone()[0]
+
+                if count_produtos > 0:
+                    cursor.close()
+                    conn.close()
+                    return jsonify({"message": "Não é possível excluir a categoria pois existem produtos associados a ela"}), 400
+
+                if count_subcategorias > 0:
+                    cursor.close()
+                    conn.close()
+                    return jsonify({"message": "Não é possível excluir a categoria pois existem subcategorias associadas a ela"}), 400
+            else:
+
+                cursor.execute('SELECT COUNT(*) FROM produto WHERE categoria_id_categoria = %s', (categoria_id,))
+                count_produtos = cursor.fetchone()[0]
+
+                if count_produtos > 0:
+                    cursor.close()
+                    conn.close()
+                    return jsonify({"message": "Não é possível excluir a subcategoria pois existem produtos associados a ela"}), 400
             
             cursor.close()
             conn.close()
