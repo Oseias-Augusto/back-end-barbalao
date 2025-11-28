@@ -311,7 +311,33 @@ class CategoryController:
         return self._update(categoria_id, "categoria", "id_categoria", data)
 
     def remove_categoria(self, categoria_id):
-        return self._remove(categoria_id, "categoria", "id_categoria")
+        try:
+            conn = self.db.get_conn()
+            cursor = conn.cursor()
+
+            cursor.execute('SELECT COUNT(*) FROM produto WHERE categoria_id_categoria = %s', (categoria_id,))
+            count_produtos = cursor.fetchone()[0]
+
+            cursor.execute('SELECT COUNT(*) FROM categoria WHERE categoria_id_categoria = %s', (categoria_id,))
+            count_subcategorias = cursor.fetchone()[0]
+
+            if count_produtos > 0:
+                cursor.close()
+                conn.close()
+                return jsonify({"message": "Não é possível excluir a categoria pois existem produtos associados a ela"}), 400
+
+            if count_subcategorias > 0:
+                cursor.close()
+                conn.close()
+                return jsonify({"message": "Não é possível excluir a categoria pois existem subcategorias associadas a ela"}), 400
+            
+            cursor.close()
+            conn.close()
+            return self._remove(categoria_id, "categoria", "id_categoria")
+
+        except Exception as e:
+            print(f"Erro ao remover categoria: {e}")
+            return jsonify({"message": f"Erro interno: {str(e)}"}), 500
 
     def _update(self, id_value, table, id_column, update_data):
         try:
